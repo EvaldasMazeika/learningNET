@@ -1,10 +1,10 @@
-﻿<!DOCTYPE html>
-<html>
+﻿@using System.Security.Claims;
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>IrKo</title>
-
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <environment include="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="~/css/site.css" />
@@ -17,31 +17,66 @@
     </environment>
 </head>
 <body>
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
+
+
+
+    <div id="throbber" style="display:none; min-height:120px;"></div>
+    <div id="noty-holder"></div>
+    <div id="wrapper">
+        <!-- Navigation -->
+        <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+            <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
                     <span class="sr-only">Toggle navigation</span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a asp-area="" asp-controller="Dashboard" asp-action="Index" class="navbar-brand">IrKo</a>
+                
             </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li><a asp-area="" asp-controller="Dashboard" asp-action="Index">Pagrindinis</a></li>
+            <!-- Top Menu Items -->
+            <ul class="nav navbar-right top-nav">
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">@User.Identities.First(u => u.IsAuthenticated && u.HasClaim(c => c.Type == ClaimTypes.Name)).FindFirst(ClaimTypes.Name).Value <b class="fa fa-angle-down"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a asp-area="" asp-controller="Dashboard" asp-action="Message"><i class="fa fa-fw fa-paper-plane-o"></i>Pranešimas</a></li>
+                        <li><a href="#"><i class="fa fa-fw fa-user"></i> Edit Profile</a></li>
+                        <li><a href="#"><i class="fa fa-fw fa-cog"></i> Change Password</a></li>
+                        <li class="divider"></li>
+                        <li><a asp-area="" asp-controller="Account" asp-action="Logout"><i class="fa fa-fw fa-power-off"></i> Logout</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
+            <div class="collapse navbar-collapse navbar-ex1-collapse">
+                
+                <ul class="nav navbar-nav side-nav">
+                    <li><h1>Sveiki atvyke</h1><hr style="margin-bottom:5px !important; margin-top:5px !important; " /></li>
+                    <li><a asp-area="" asp-controller="Dashboard" asp-action="Index"><i class="fa fa-fw fa-user-plus"></i> Pagrindinis</a></li>
+                    <li class="divider"></li>
+                    <li><a asp-area="" asp-controller="Test" asp-action="Index"><i class="fa fa-fw fa-paper-plane-o"></i> TESTAS</a></li>
                 </ul>
             </div>
+            <!-- /.navbar-collapse -->
+        </nav>
+        <div id="page-wrapper">
+            <div class="container-fluid">
+                <!-- Page Heading -->
+                <div class="row" id="main">
+                    <div class="col-sm-12 col-md-12 well" id="content">
+                        @RenderBody()
+                        
+                    </div>
+                </div>
+                <!-- /.row -->
+            </div>
+            <!-- /.container-fluid -->
         </div>
-    </nav>
-    <div class="container body-content">
-        @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; 2017 - IrKo</p>
-        </footer>
-    </div>
+        <!-- /#page-wrapper -->
+    </div><!-- /#wrapper -->
+
+
 
     <environment include="Development">
         <script src="~/lib/jquery/dist/jquery.js"></script>
@@ -65,5 +100,9 @@
     </environment>
 
     @RenderSection("Scripts", required: false)
+
+
+
+
 </body>
 </html>

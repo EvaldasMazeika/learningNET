@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27004.2008
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KompleksinisV2", "KompleksinisV2\KompleksinisV2.csproj", "{325FA6DA-B6EA-4E36-B133-414C3F571D86}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KompleksinisV2", "KompleksinisV2\KompleksinisV2.csproj", "{325FA6DA-B6EA-4E36-B133-414C3F571D86}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
