@@ -7,6 +7,7 @@ using KompleksinisV2.Data;
 using KompleksinisV2.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace KompleksinisV2.Controllers
@@ -31,6 +32,135 @@ namespace KompleksinisV2.Controllers
             return View(await text.ToListAsync());
         }
 
+        public IActionResult Employees()
+        {
+            var _list = _context.Employees.Include(c => c.Position).Include(x => x.Sector).AsNoTracking();
+            return View(_list.ToList());
+        }
+
+        public IActionResult Reports()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult NewEmployee()
+        {
+            PopulatePositionDropDown();
+            PopulateSectorDropDown();
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> NewEmployee(Employee employee)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    _context.Add(employee);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Employees));
+                }
+            }
+            catch (Exception)
+            {throw;}
+
+            PopulatePositionDropDown(employee.PositionID);
+            PopulateSectorDropDown(employee.SectorID);
+            return View(employee);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> EditEmployee(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var query = await _context.Employees
+                .AsNoTracking()
+                .SingleOrDefaultAsync(m => m.ID == id);
+
+            if (query == null)
+            {
+                return NotFound();
+            }
+            PopulatePositionDropDown(query.PositionID);
+            PopulateSectorDropDown(query.SectorID);
+            return View(query);
+        }
+
+        [HttpPost, ActionName("EditEmployee")]
+        public async Task<IActionResult> EditEmp(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var whatToUpdat = await _context.Employees.SingleOrDefaultAsync(s => s.ID == id);
+
+            if (await TryUpdateModelAsync<Employee>(
+                whatToUpdat, "", i=> i.Name, i=> i.Surname, i=> i.Email, i=> i.Password, i=> i.BirthDate, i=> i.MobileNumber, i=> i.PositionID, i=> i.SectorID))
+
+            {
+                try
+                {
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Employees));
+                }
+                catch (DbUpdateException)
+                {
+                }
+            }
+            return View(whatToUpdat);
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteEmployee(int id)
+        {
+            var student = await _context.Employees
+                .AsNoTracking()
+                .SingleOrDefaultAsync(m => m.ID == id);
+            if (student == null)
+            {
+                return RedirectToAction(nameof(Employees));
+            }
+
+            try
+            {
+                _context.Employees.Remove(student);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Employees));
+            }
+            catch (DbUpdateException /* ex */)
+            {
+                //Log the error (uncomment ex variable name and write a log.)
+                return RedirectToAction(nameof(Employees));
+            }
+        }
+
+
+
+        private void PopulateSectorDropDown(object selected = null)
+        {
+            var query = from d in _context.Sectors
+                        orderby d.Name
+                        select d;
+            ViewBag.SectorID = new SelectList(query.AsNoTracking(), "ID", "Name",selected);
+        }
+
+        private void PopulatePositionDropDown(object selected = null)
+        {
+            var query = from d in _context.Positions
+                        orderby d.Name
+                        select d;
+
+            ViewBag.PositionID = new SelectList(query.AsNoTracking(), "ID", "Name",selected);
+        }
+
         [HttpGet]
         public IActionResult Message()
         {
@@ -41,7 +171,7 @@ namespace KompleksinisV2.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Message([Bind("WrittenText")] Message message)
         {
-            Employee emp = _context.Employees.Single(x => x.Username == User.Identities.First(
+            Employee emp = _context.Employees.Single(x => x.Name == User.Identities.First(
       u => u.IsAuthenticated &&
       u.HasClaim(c => c.Type == ClaimTypes.Name)).FindFirst(ClaimTypes.Name).Value);
             try

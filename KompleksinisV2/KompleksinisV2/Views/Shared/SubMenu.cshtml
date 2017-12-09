@@ -1,0 +1,26 @@
+﻿
+@{
+    var controller = ViewContext.RouteData.Values["Controller"].ToString();
+
+    if (controller == "Dashboard")
+    {
+        
+        <ul class="nav navbar-nav side-nav">
+            <li><h1>Pagrindinis</h1><hr style="margin-bottom:5px !important; margin-top:5px !important; " /></li>
+            <li><a asp-area="" asp-controller="Dashboard" asp-action="Index"><i class="fa fa-fw fa-user-plus"></i> Pagrindinis</a></li>
+            <li><a asp-area="" asp-controller="Dashboard" asp-action="Employees"><i class="fa fa-fw fa-paper-plane-o"></i> Darbuotojai</a></li>
+            <li><a asp-area="" asp-controller="Dashboard" asp-action="Reports"><i class="fa fa-fw fa-paper-plane-o"></i> Ataskaitos</a></li>
+            <li><a asp-area="" asp-controller="Dashboard" asp-action="Message"><i class="fa fa-fw fa-paper-plane-o"></i>Pranešimas</a></li>
+        </ul>
+    }
+    else if (controller == "Test")
+    {
+        <ul class="nav navbar-nav side-nav">
+            <li><h1>Supirkimas</h1><hr style="margin-bottom:5px !important; margin-top:5px !important; " /></li>
+            <li><a asp-area="" asp-controller="Dashboard" asp-action="Index"><i class="fa fa-fw fa-user-plus"></i> Pagrindinis</a></li>
+            <li class="divider"></li>
+        </ul>
+
+    }
+
+}

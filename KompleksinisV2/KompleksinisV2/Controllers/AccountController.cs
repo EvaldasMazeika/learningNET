@@ -30,11 +30,14 @@ namespace KompleksinisV2.Controllers
         public async Task<IActionResult> Login(Employee employee)
         {
 
-            if (LoginUser(employee.Username, employee.Password))
+            if (LoginUser(employee.Email, employee.Password))
             {
+                employee.Name = _context.Employees.Single(x => x.Email == employee.Email).Name;
+              //  employee.Name =  _context.Employees.Where(x => x.Email == employee.Email).Select(x => x.Name).ToString();
+
                 var claims = new List<Claim>
                 {
-                    new Claim(ClaimTypes.Name, employee.Username)
+                    new Claim(ClaimTypes.Name, employee.Name) 
                 };
 
                 var userIdentity = new ClaimsIdentity(claims, "Login");
@@ -47,9 +50,9 @@ namespace KompleksinisV2.Controllers
             return View();
         }
 
-        private bool LoginUser(string username, string password)
+        private bool LoginUser(string email, string password)
         {
-            var lol = _context.Employees.Where(x => x.Username == username && x.Password == password);
+            var lol = _context.Employees.Where(x => x.Email == email && x.Password == password);
             
             if (lol.Any())
             {

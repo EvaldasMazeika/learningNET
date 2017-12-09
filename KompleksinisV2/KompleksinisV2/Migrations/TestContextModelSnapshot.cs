@@ -37,13 +37,27 @@ namespace KompleksinisV2.Migrations
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<DateTime>("BirthDate");
+
                     b.Property<string>("Email");
+
+                    b.Property<string>("MobileNumber");
+
+                    b.Property<string>("Name");
 
                     b.Property<string>("Password");
 
-                    b.Property<string>("Username");
+                    b.Property<int>("PositionID");
+
+                    b.Property<int>("SectorID");
+
+                    b.Property<string>("Surname");
 
                     b.HasKey("ID");
+
+                    b.HasIndex("PositionID");
+
+                    b.HasIndex("SectorID");
 
                     b.ToTable("Employee");
                 });
@@ -84,6 +98,43 @@ namespace KompleksinisV2.Migrations
                     b.HasIndex("EmployeeID");
 
                     b.ToTable("Message");
+                });
+
+            modelBuilder.Entity("KompleksinisV2.Models.Position", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("Position");
+                });
+
+            modelBuilder.Entity("KompleksinisV2.Models.Sector", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("Sector");
+                });
+
+            modelBuilder.Entity("KompleksinisV2.Models.Employee", b =>
+                {
+                    b.HasOne("KompleksinisV2.Models.Position", "Position")
+                        .WithMany()
+                        .HasForeignKey("PositionID")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("KompleksinisV2.Models.Sector", "Sector")
+                        .WithMany()
+                        .HasForeignKey("SectorID")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("KompleksinisV2.Models.Mark", b =>

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace KompleksinisV2.Migrations
 {
-    public partial class InitialCrate : Migration
+    public partial class InitialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -23,18 +23,61 @@ namespace KompleksinisV2.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Position",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Position", x => x.ID);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Sector",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Sector", x => x.ID);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Employee",
                 columns: table => new
                 {
                     ID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    BirthDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    MobileNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Username = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    PositionID = table.Column<int>(type: "int", nullable: false),
+                    SectorID = table.Column<int>(type: "int", nullable: false),
+                    Surname = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Employee", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_Employee_Position_PositionID",
+                        column: x => x.PositionID,
+                        principalTable: "Position",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Employee_Sector_SectorID",
+                        column: x => x.SectorID,
+                        principalTable: "Sector",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -86,6 +129,16 @@ namespace KompleksinisV2.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Employee_PositionID",
+                table: "Employee",
+                column: "PositionID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Employee_SectorID",
+                table: "Employee",
+                column: "SectorID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Mark_CourseID",
                 table: "Mark",
                 column: "CourseID");
@@ -114,6 +167,12 @@ namespace KompleksinisV2.Migrations
 
             migrationBuilder.DropTable(
                 name: "Employee");
+
+            migrationBuilder.DropTable(
+                name: "Position");
+
+            migrationBuilder.DropTable(
+                name: "Sector");
         }
     }
 }
