@@ -1,9 +1,18 @@
 ﻿@model Message
 
 
-
+<h1>Sukurkite pranešimą</h1>
+<hr />
 <form asp-controller="Dashboard" asp-action="Message" method="post">
-    what:  <input type="text" asp-for="WrittenText" /> <br />
-  
-    <button type="submit">Register</button>
+    <div class="form-group">
+        <label asp-for="Title" class="control-label"></label>
+        <input asp-for="Title" class="form-control" />
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="WrittenText" class="control-label"></label>
+        <textarea asp-for="WrittenText"  class="form-control" rows="3"></textarea>
+        <span asp-validation-for="WrittenText" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-default">Išsaugoti</button>
 </form>

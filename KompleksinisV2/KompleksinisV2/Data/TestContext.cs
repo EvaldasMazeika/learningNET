@@ -14,19 +14,17 @@ namespace KompleksinisV2.Data
         public DbSet<Position> Positions { get; set; }
         public DbSet<Sector> Sectors { get; set; }
         public DbSet<Employee> Employees { get; set; }
-        public DbSet<Mark> Marks { get; set; }
-        public DbSet<Course> Courses { get; set; }
         public DbSet<Message> Messages { get; set; }
+        public DbSet<Comments> Comments { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Position>().ToTable("Position");
             modelBuilder.Entity<Sector>().ToTable("Sector");
-            modelBuilder.Entity<Course>().ToTable("Course");
-            modelBuilder.Entity<Mark>().ToTable("Mark");
             modelBuilder.Entity<Employee>().ToTable("Employee");
             modelBuilder.Entity<Message>().ToTable("Message");
+            modelBuilder.Entity<Comments>().ToTable("Comments");
         }
 
     }

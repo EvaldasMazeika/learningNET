@@ -51,35 +51,6 @@ namespace KompleksinisV2.Data
             }
             context.SaveChanges();
 
-            var courses = new Course[]
-            {
-            new Course{Title="Chemistry"},
-            new Course{Title="Microeconomics"},
-            new Course{Title="Macroeconomics"},
-            new Course{Title="Calculus"},
-
-            };
-            foreach (Course c in courses)
-            {
-                context.Courses.Add(c);
-            }
-            context.SaveChanges();
-
-            var marks = new Mark[]
-            {
-                new Mark{CourseID=1,EmployeeID=1,Grade=5},
-                new Mark{CourseID=2,EmployeeID=1,Grade=2},
-                new Mark{CourseID=3,EmployeeID=1,Grade=10},
-                new Mark{CourseID=1,EmployeeID=2,Grade=7},
-                new Mark{CourseID=2,EmployeeID=2,Grade=4}
-            };
-
-            foreach (var c in marks)
-            {
-                context.Marks.Add(c);
-            }
-            context.SaveChanges();
-
         }
     }
 }

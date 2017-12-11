@@ -26,6 +26,7 @@ namespace KompleksinisV2.Controllers
         public async Task<IActionResult> Index()
         {
             var text = _context.Messages
+                .OrderByDescending(x=> x.WriteDate)
                 .Include(c => c.Employee)
                 .AsNoTracking();
 
@@ -162,6 +163,43 @@ namespace KompleksinisV2.Controllers
         }
 
         [HttpGet]
+        public IActionResult Comments(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var _query = _context.Messages
+                .Include(c=> c.Comments)
+                .SingleOrDefault(x => x.ID == id);// TODO: PABAIGTI SITA REIKALA SU KOMENTARAIS
+
+
+            return View(_query);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Comments([Bind("MessageID", "Comment")] Comments comments)
+        {
+            if (ModelState.IsValid)
+            {
+                int _id = Int32.Parse(User.Identities.First(u => u.IsAuthenticated && u.HasClaim(c => c.Type == "UserID")).FindFirst("UserID").Value);
+
+                string firsName = _context.Employees.SingleOrDefault(x => x.ID == _id).Name;
+                string secondName = _context.Employees.SingleOrDefault(x => x.ID == _id).Surname;
+
+                comments.ComDate = DateTime.Now;
+                comments.Fullname = firsName + " " + secondName;
+
+                _context.Add(comments);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Comments));
+            }
+            return View();
+        }
+
+
+
+        [HttpGet]
         public IActionResult Message()
         {
             return View();
@@ -169,11 +207,9 @@ namespace KompleksinisV2.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Message([Bind("WrittenText")] Message message)
+        public async Task<IActionResult> Message([Bind("Title", "WrittenText")] Message message)
         {
-            Employee emp = _context.Employees.Single(x => x.Name == User.Identities.First(
-      u => u.IsAuthenticated &&
-      u.HasClaim(c => c.Type == ClaimTypes.Name)).FindFirst(ClaimTypes.Name).Value);
+            Employee emp = _context.Employees.Single(x => x.ID == Int32.Parse(User.Identities.First(u => u.IsAuthenticated && u.HasClaim(c => c.Type == "UserID")).FindFirst("UserID").Value) );
             try
             {
                 if(ModelState.IsValid)

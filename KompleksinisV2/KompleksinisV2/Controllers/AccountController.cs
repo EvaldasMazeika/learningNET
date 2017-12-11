@@ -5,9 +5,11 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using KompleksinisV2.Data;
 using KompleksinisV2.Models;
+using KompleksinisV2.Models.ViewModels;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace KompleksinisV2.Controllers
 {
@@ -33,11 +35,13 @@ namespace KompleksinisV2.Controllers
             if (LoginUser(employee.Email, employee.Password))
             {
                 employee.Name = _context.Employees.Single(x => x.Email == employee.Email).Name;
+                employee.ID = _context.Employees.Single(x => x.Email == employee.Email).ID;
               //  employee.Name =  _context.Employees.Where(x => x.Email == employee.Email).Select(x => x.Name).ToString();
 
                 var claims = new List<Claim>
                 {
-                    new Claim(ClaimTypes.Name, employee.Name) 
+                    new Claim(ClaimTypes.Name, employee.Name), 
+                    new Claim("UserID",String.Join("",employee.ID))
                 };
 
                 var userIdentity = new ClaimsIdentity(claims, "Login");
@@ -69,6 +73,71 @@ namespace KompleksinisV2.Controllers
             await HttpContext.SignOutAsync();
             return RedirectToAction("Login","Account");
         }
+
+        [HttpGet]
+        public IActionResult Edit()
+        {
+            int _id = Int32.Parse(User.Identities.First(u => u.IsAuthenticated && u.HasClaim(c => c.Type == "UserID")).FindFirst("UserID").Value);
+            var empToUpdate = _context.Employees.SingleOrDefault(x => x.ID == _id);
+
+            EditMySelfViewModel _temp = new EditMySelfViewModel
+            {
+                Email = empToUpdate.Email,
+                Surname = empToUpdate.Surname,
+                MobileNumber = empToUpdate.MobileNumber
+            };
+
+            return View(_temp);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(EditMySelfViewModel emp)
+        {
+            int _id = Int32.Parse(User.Identities.First(u => u.IsAuthenticated && u.HasClaim(c => c.Type == "UserID")).FindFirst("UserID").Value);
+            var empToUpdate = await _context.Employees.SingleOrDefaultAsync(x => x.ID == _id);
+
+            if (ModelState.IsValid)
+            {
+                empToUpdate.Surname = emp.Surname;
+                empToUpdate.Email = emp.Email;
+                empToUpdate.MobileNumber = emp.MobileNumber;
+
+                _context.Update(empToUpdate);
+                await _context.SaveChangesAsync();
+                return RedirectToAction("Index", "Dashboard");
+            }
+
+            return View(emp);
+        }
+
+
+        [HttpGet]
+        public IActionResult ChangePassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ChangePassword(ChangePasswordViewModel changePasswordViewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                if (changePasswordViewModel.NewPassword == changePasswordViewModel.RepeatPassword)
+                {
+                    int _id = Int32.Parse(User.Identities.First(u => u.IsAuthenticated && u.HasClaim(c => c.Type == "UserID")).FindFirst("UserID").Value);
+                    var empToUpdate = _context.Employees.SingleOrDefault(x => x.ID == _id);
+
+                    empToUpdate.Password = changePasswordViewModel.NewPassword;
+
+                    _context.Update(empToUpdate);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction("Index", "Dashboard");
+
+                }
+            }
+            return View(changePasswordViewModel);
+        }
+
 
         /* public async Task<IActionResult> Login(string returnUrl = null)
          {

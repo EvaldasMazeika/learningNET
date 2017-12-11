@@ -1,14 +1,18 @@
 ﻿@model IEnumerable<KompleksinisV2.Models.Message>
-@{
-    ViewData["Title"] = "Sveiki";
-}
-@foreach (var item in Model)
-{
-    <section>
-        <h2>@item.Employee.Name @item.Employee.Email</h2>
-        <h3>@item.WriteDate</h3>
-        <div>@item.WrittenText</div>
-    </section>
-    <hr>
-}
+
+
+<h1>Nauji pranešimai</h1>
+<hr />
+<table class="table table-bordered">
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td><a asp-action="Comments" asp-route-id="@item.ID">@item.Title</a></td>
+            <td>@item.Employee.Name @item.Employee.Surname</td>
+            <td>@item.WriteDate</td>
+        </tr>
+    }
+   
+</table>
+
 

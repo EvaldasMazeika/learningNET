@@ -11,9 +11,10 @@ using System;
 namespace KompleksinisV2.Migrations
 {
     [DbContext(typeof(TestContext))]
-    partial class TestContextModelSnapshot : ModelSnapshot
+    [Migration("20171210171313_Commentstable")]
+    partial class Commentstable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,7 +31,7 @@ namespace KompleksinisV2.Migrations
                     b.Property<string>("Comment")
                         .IsRequired();
 
-                    b.Property<string>("Fullname");
+                    b.Property<int>("Fullname");
 
                     b.Property<int>("MessageID");
 
@@ -85,10 +86,6 @@ namespace KompleksinisV2.Migrations
                         .ValueGeneratedOnAdd();
 
                     b.Property<int?>("EmployeeID");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasMaxLength(20);
 
                     b.Property<DateTime>("WriteDate");
 

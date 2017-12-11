@@ -1,0 +1,20 @@
+﻿@model Message
+
+
+<h2>@Model.Title <small>@Model.WriteDate</small></h2>
+<hr />
+<div><p>@Html.Raw("<pre>" + Html.Encode(Model.WrittenText) + "</pre>")</p></div>
+<hr />
+<h3>Komentarai:</h3>
+<hr />
+@foreach (var item in Model.Comments)
+{
+    <section>
+        <h4><em><strong>@item.Fullname</strong></em> <small> @item.ComDate</small></h4>
+        <p>@Html.Raw("<pre>" + Html.Encode(item.Comment) + "</pre>")</p>
+    </section>
+    <hr />
+}
+<h3>Rašyti komentarą:</h3>
+@await Component.InvokeAsync("Newcomment", new { MessageID = Model.ID })
+

@@ -1,9 +1,8 @@
-﻿@model IEnumerable<Employee>
-@{
-    ViewData["Title"] = "Employees";
-}
-<a class="btn btn-info btn-lg" role="button" asp-action="NewEmployee">Pridėti naują Darbuotoją</a>
+﻿@using System.Security.Claims;
+@model IEnumerable<Employee>
 
+<a class="btn btn-info btn-lg" role="button" asp-action="NewEmployee">Pridėti naują Darbuotoją</a>
+<hr />
 <table class="table table-striped">
     <tr>
         <td><strong>Vardas Pavardė</strong></td>
@@ -20,8 +19,11 @@
             <td>@item.Position.Name</td>
             <td>@item.Sector.Name</td>
             <td>
-            <a class="btn btn-warning btn-xs" role="button" asp-action="EditEmployee" asp-route-id="@item.ID"><i class="glyphicon glyphicon-edit"></i></a>  
-                <button type="button" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#exampleModal" data-whatever="@item.ID"><i class="glyphicon glyphicon-trash"></i></button>
+                @if (User.Identities.First(u => u.IsAuthenticated && u.HasClaim(c => c.Type == "UserID")).FindFirst("UserID").Value != String.Join("",item.ID))
+                {
+                    <a class="btn btn-warning btn-xs" role="button" asp-action="EditEmployee" asp-route-id="@item.ID"><i class="glyphicon glyphicon-edit"></i></a>
+                    <button type="button" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#exampleModal" data-whatever="@item.ID"><i class="glyphicon glyphicon-trash"></i></button>
+                }
             </td>
         </tr>
     }
