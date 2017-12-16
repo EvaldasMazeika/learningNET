@@ -20,6 +20,34 @@ namespace KompleksinisV2.Migrations
                 .HasAnnotation("ProductVersion", "2.0.0-rtm-26452")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+            modelBuilder.Entity("KompleksinisV2.Models.Client", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Adress")
+                        .IsRequired()
+                        .HasMaxLength(40);
+
+                    b.Property<string>("Email")
+                        .IsRequired();
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(20);
+
+                    b.Property<string>("PhoneNum")
+                        .IsRequired();
+
+                    b.Property<string>("Surname")
+                        .IsRequired()
+                        .HasMaxLength(20);
+
+                    b.HasKey("ID");
+
+                    b.ToTable("Clients");
+                });
+
             modelBuilder.Entity("KompleksinisV2.Models.Comments", b =>
                 {
                     b.Property<int>("ID")
@@ -102,6 +130,31 @@ namespace KompleksinisV2.Migrations
                     b.ToTable("Message");
                 });
 
+            modelBuilder.Entity("KompleksinisV2.Models.Order", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("ClientID");
+
+                    b.Property<string>("Notes");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("money");
+
+                    b.Property<int>("ProductID");
+
+                    b.Property<decimal>("Quantity");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("ClientID");
+
+                    b.HasIndex("ProductID");
+
+                    b.ToTable("Order");
+                });
+
             modelBuilder.Entity("KompleksinisV2.Models.Position", b =>
                 {
                     b.Property<int>("ID")
@@ -112,6 +165,40 @@ namespace KompleksinisV2.Migrations
                     b.HasKey("ID");
 
                     b.ToTable("Position");
+                });
+
+            modelBuilder.Entity("KompleksinisV2.Models.Product", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Description");
+
+                    b.Property<string>("Name");
+
+                    b.Property<decimal>("Price");
+
+                    b.Property<int>("ProductGroupID");
+
+                    b.Property<double?>("Quantity");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("ProductGroupID");
+
+                    b.ToTable("Product");
+                });
+
+            modelBuilder.Entity("KompleksinisV2.Models.ProductGroup", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("ProductGroup");
                 });
 
             modelBuilder.Entity("KompleksinisV2.Models.Sector", b =>
@@ -152,6 +239,27 @@ namespace KompleksinisV2.Migrations
                     b.HasOne("KompleksinisV2.Models.Employee", "Employee")
                         .WithMany()
                         .HasForeignKey("EmployeeID");
+                });
+
+            modelBuilder.Entity("KompleksinisV2.Models.Order", b =>
+                {
+                    b.HasOne("KompleksinisV2.Models.Client", "Client")
+                        .WithMany()
+                        .HasForeignKey("ClientID")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("KompleksinisV2.Models.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductID")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("KompleksinisV2.Models.Product", b =>
+                {
+                    b.HasOne("KompleksinisV2.Models.ProductGroup", "ProductGroup")
+                        .WithMany()
+                        .HasForeignKey("ProductGroupID")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }

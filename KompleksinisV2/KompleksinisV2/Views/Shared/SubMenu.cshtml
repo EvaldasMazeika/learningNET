@@ -7,17 +7,20 @@
         
         <ul class="nav navbar-nav side-nav">
             <li><h1>Pagrindinis</h1><hr style="margin-bottom:5px !important; margin-top:5px !important; " /></li>
-            <li><a asp-area="" asp-controller="Dashboard" asp-action="Index"><i class="fa fa-fw fa-user-plus"></i> Pagrindinis</a></li>
-            <li><a asp-area="" asp-controller="Dashboard" asp-action="Employees"><i class="fa fa-fw fa-paper-plane-o"></i> Darbuotojai</a></li>
-            <li><a asp-area="" asp-controller="Dashboard" asp-action="Reports"><i class="fa fa-fw fa-paper-plane-o"></i> Ataskaitos</a></li>
-            <li><a asp-area="" asp-controller="Dashboard" asp-action="Message"><i class="fa fa-fw fa-paper-plane-o"></i>Pranešimas</a></li>
+            <li><a asp-area="" asp-controller="Dashboard" asp-action="Index"><i class="glyphicon glyphicon-home"></i> Pagrindinis</a></li>
+            <li><a asp-area="" asp-controller="Dashboard" asp-action="Employees"><i class="glyphicon glyphicon-user"></i> Darbuotojai</a></li>
+            <li><a asp-area="" asp-controller="Dashboard" asp-action="Reports"><i class="glyphicon glyphicon-list-alt"></i> Ataskaitos</a></li>
+            <li><a asp-area="" asp-controller="Dashboard" asp-action="Message"><i class="glyphicon glyphicon-comment"></i> Pranešimas</a></li>
         </ul>
     }
-    else if (controller == "Test")
+    else if (controller == "Sales")
     {
         <ul class="nav navbar-nav side-nav">
-            <li><h1>Supirkimas</h1><hr style="margin-bottom:5px !important; margin-top:5px !important; " /></li>
-            <li><a asp-area="" asp-controller="Dashboard" asp-action="Index"><i class="fa fa-fw fa-user-plus"></i> Pagrindinis</a></li>
+            <li><h1>Pardavimai</h1><hr style="margin-bottom:5px !important; margin-top:5px !important; " /></li>
+            <li><a asp-area="" asp-controller="Sales" asp-action="Index"><i class="glyphicon glyphicon-home"></i> Pagrindinis</a></li>
+            <li><a asp-area="" asp-controller="Sales" asp-action="Orders"><i class="glyphicon glyphicon-briefcase"></i> Užsaymai</a></li>
+            <li><a asp-area="" asp-controller="Sales" asp-action="Clients"><i class="glyphicon glyphicon-user"></i> Klientai</a></li>
+            <li><a asp-area="" asp-controller="Sales" asp-action="Reports"><i class="glyphicon glyphicon-list-alt"></i> Ataskaitos</a></li>
             <li class="divider"></li>
         </ul>
 

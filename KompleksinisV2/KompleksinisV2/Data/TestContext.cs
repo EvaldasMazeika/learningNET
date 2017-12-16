@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using KompleksinisV2.Models;
+﻿using KompleksinisV2.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace KompleksinisV2.Data
@@ -16,6 +12,10 @@ namespace KompleksinisV2.Data
         public DbSet<Employee> Employees { get; set; }
         public DbSet<Message> Messages { get; set; }
         public DbSet<Comments> Comments { get; set; }
+        public DbSet<Client> Clients { get; set; }
+        public DbSet<ProductGroup> ProductGroups { get; set; }
+        public DbSet<Product> Products { get; set; }
+        public DbSet<Order> Orders { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -25,6 +25,10 @@ namespace KompleksinisV2.Data
             modelBuilder.Entity<Employee>().ToTable("Employee");
             modelBuilder.Entity<Message>().ToTable("Message");
             modelBuilder.Entity<Comments>().ToTable("Comments");
+            modelBuilder.Entity<Client>().ToTable("Clients");
+            modelBuilder.Entity<ProductGroup>().ToTable("ProductGroup");
+            modelBuilder.Entity<Product>().ToTable("Product");
+            modelBuilder.Entity<Order>().ToTable("Order");
         }
 
     }

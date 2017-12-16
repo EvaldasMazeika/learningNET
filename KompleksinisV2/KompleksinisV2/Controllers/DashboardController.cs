@@ -122,17 +122,17 @@ namespace KompleksinisV2.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteEmployee(int id)
         {
-            var student = await _context.Employees
+            var emp = await _context.Employees
                 .AsNoTracking()
                 .SingleOrDefaultAsync(m => m.ID == id);
-            if (student == null)
+            if (emp == null)
             {
                 return RedirectToAction(nameof(Employees));
             }
 
             try
             {
-                _context.Employees.Remove(student);
+                _context.Employees.Remove(emp);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Employees));
             }

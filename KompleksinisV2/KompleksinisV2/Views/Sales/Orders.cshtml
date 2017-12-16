@@ -1,0 +1,28 @@
+﻿@model IEnumerable<KompleksinisV2.Models.Order>
+<h2>Užsakymai</h2>
+<hr />
+<a class="btn btn-info btn-lg" role="button" asp-action="NewOrder">Pridėti naują užsakymą</a>
+<hr />
+<table class="table table-striped">
+    <tr>
+        <td><strong>ID</strong></td>
+        <td><strong>Klientas</strong></td>
+        <td><strong>Prekė</strong></td>
+        <td><strong>Pastabos</strong></td>
+        <td><strong>Kaina</strong></td>
+        <td><strong>Kiekis</strong></td>
+    </tr>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.ID</td>
+            <td>@item.Client.Name</td>
+            <td>@item.Product.Name</td>
+            <td>@item.Notes</td>
+            <td>@item.Price</td>
+            <td>@item.Quantity</td>
+            
+        </tr>
+    }
+</table>
+

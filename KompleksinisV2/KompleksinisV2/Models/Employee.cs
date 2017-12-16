@@ -56,7 +56,5 @@ namespace KompleksinisV2.Models
         public Position Position { get; set; }
         public Sector Sector { get; set; }
 
-       // public ICollection<Mark> Marks { get; set; }
-        //public ICollection<Enrollment> Enrollments { get; set; } // tipo cia sarasas ,kuris priklauso sitam vienetui
     }
 }
