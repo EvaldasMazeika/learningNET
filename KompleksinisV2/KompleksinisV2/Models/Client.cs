@@ -24,7 +24,7 @@ namespace KompleksinisV2.Models
 
         [EmailAddress]
         [Required(ErrorMessage = "Šis laukas yra privalomas")]
-        [Display(Name = "E-paštas")]
+        [Display(Name = "El. paštas")]
         public string Email { get; set; }
 
         [Required(ErrorMessage = "Šis laukas yra privalomas")]
@@ -37,6 +37,14 @@ namespace KompleksinisV2.Models
         [Required(ErrorMessage = "Šis laukas yra privalomas")]
         [Display(Name = "Adresas")]
         public string Adress { get; set; }
+
+        public string FullName
+        {
+            get
+            {
+                return Name + " " + Surname + " " + Email;
+            }
+        }
 
     }
 }

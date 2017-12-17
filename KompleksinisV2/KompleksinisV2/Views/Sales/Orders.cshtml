@@ -7,21 +7,18 @@
     <tr>
         <td><strong>ID</strong></td>
         <td><strong>Klientas</strong></td>
-        <td><strong>Prekė</strong></td>
         <td><strong>Pastabos</strong></td>
-        <td><strong>Kaina</strong></td>
-        <td><strong>Kiekis</strong></td>
+        <td><strong>Būsena</strong></td>
+        <td><strong>Nustatymai</strong></td>
     </tr>
     @foreach (var item in Model)
     {
         <tr>
             <td>@item.ID</td>
             <td>@item.Client.Name</td>
-            <td>@item.Product.Name</td>
             <td>@item.Notes</td>
-            <td>@item.Price</td>
-            <td>@item.Quantity</td>
-            
+            <td>@item.State.Name</td>
+            <td><a class="btn btn-warning btn-xs" role="button" asp-action="Details" asp-route-id="@item.ID">Peržiūrėti</a></td>
         </tr>
     }
 </table>

@@ -11,9 +11,10 @@ using System;
 namespace KompleksinisV2.Migrations
 {
     [DbContext(typeof(TestContext))]
-    partial class TestContextModelSnapshot : ModelSnapshot
+    [Migration("20171217150832_fixingCommas")]
+    partial class fixingCommas
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -139,8 +140,6 @@ namespace KompleksinisV2.Migrations
 
                     b.Property<DateTime>("CreateDate");
 
-                    b.Property<int>("EmployeeID");
-
                     b.Property<string>("Notes")
                         .HasMaxLength(100);
 
@@ -149,8 +148,6 @@ namespace KompleksinisV2.Migrations
                     b.HasKey("ID");
 
                     b.HasIndex("ClientID");
-
-                    b.HasIndex("EmployeeID");
 
                     b.HasIndex("StateID");
 
@@ -204,7 +201,7 @@ namespace KompleksinisV2.Migrations
 
                     b.Property<int>("ProductGroupID");
 
-                    b.Property<decimal>("Quantity");
+                    b.Property<double?>("Quantity");
 
                     b.HasKey("ID");
 
@@ -282,11 +279,6 @@ namespace KompleksinisV2.Migrations
                     b.HasOne("KompleksinisV2.Models.Client", "Client")
                         .WithMany()
                         .HasForeignKey("ClientID")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("KompleksinisV2.Models.Employee", "Employee")
-                        .WithMany()
-                        .HasForeignKey("EmployeeID")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("KompleksinisV2.Models.State", "State")

@@ -11,9 +11,10 @@ using System;
 namespace KompleksinisV2.Migrations
 {
     [DbContext(typeof(TestContext))]
-    partial class TestContextModelSnapshot : ModelSnapshot
+    [Migration("20171216160201_UpdatedOrder")]
+    partial class UpdatedOrder
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -139,18 +140,13 @@ namespace KompleksinisV2.Migrations
 
                     b.Property<DateTime>("CreateDate");
 
-                    b.Property<int>("EmployeeID");
-
-                    b.Property<string>("Notes")
-                        .HasMaxLength(100);
+                    b.Property<string>("Notes");
 
                     b.Property<int>("StateID");
 
                     b.HasKey("ID");
 
                     b.HasIndex("ClientID");
-
-                    b.HasIndex("EmployeeID");
 
                     b.HasIndex("StateID");
 
@@ -164,7 +160,8 @@ namespace KompleksinisV2.Migrations
 
                     b.Property<int>("OrderID");
 
-                    b.Property<decimal>("Price");
+                    b.Property<decimal>("Price")
+                        .HasColumnType("money");
 
                     b.Property<int>("ProductID");
 
@@ -204,7 +201,7 @@ namespace KompleksinisV2.Migrations
 
                     b.Property<int>("ProductGroupID");
 
-                    b.Property<decimal>("Quantity");
+                    b.Property<double?>("Quantity");
 
                     b.HasKey("ID");
 
@@ -282,11 +279,6 @@ namespace KompleksinisV2.Migrations
                     b.HasOne("KompleksinisV2.Models.Client", "Client")
                         .WithMany()
                         .HasForeignKey("ClientID")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("KompleksinisV2.Models.Employee", "Employee")
-                        .WithMany()
-                        .HasForeignKey("EmployeeID")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("KompleksinisV2.Models.State", "State")

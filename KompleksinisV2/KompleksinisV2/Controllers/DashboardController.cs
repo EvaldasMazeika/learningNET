@@ -171,8 +171,7 @@ namespace KompleksinisV2.Controllers
             }
             var _query = _context.Messages
                 .Include(c=> c.Comments)
-                .SingleOrDefault(x => x.ID == id);// TODO: PABAIGTI SITA REIKALA SU KOMENTARAIS
-
+                .SingleOrDefault(x => x.ID == id);
 
             return View(_query);
         }

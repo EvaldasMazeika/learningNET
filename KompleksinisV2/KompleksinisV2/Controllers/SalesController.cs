@@ -6,6 +6,7 @@ using KompleksinisV2.Data;
 using KompleksinisV2.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace KompleksinisV2.Controllers
@@ -14,6 +15,8 @@ namespace KompleksinisV2.Controllers
     public class SalesController : Controller
     {
         private TestContext _context;
+
+        public object DataTime { get; private set; }
 
         public SalesController(TestContext context)
         {
@@ -27,20 +30,114 @@ namespace KompleksinisV2.Controllers
 
         public async Task<IActionResult> Orders()
         {
-            var ords = _context.Orders
-                .Include(c => c.Client)
-                .Include(c => c.Product)
-                .AsNoTracking();
+              var ords = _context.Orders
+                  .Include(c => c.Client)
+                  .Include(x => x.State)
+                  .AsNoTracking();
 
-            return View(await ords.ToListAsync());
+              return View(await ords.ToListAsync());
+           
         }
 
+        [HttpGet]
         public IActionResult NewOrder()
         {
+            PopulateClientsDropDown();
             return View();
         }
 
+        [HttpPost]
+        public async Task<IActionResult> NewOrder([Bind("ClientID", "Notes")]Order order)
+        {
+            if (ModelState.IsValid)
+            {
+                order.CreateDate = DateTime.Now;
+                order.EmployeeID = Int32.Parse(User.Identities.First(u => u.IsAuthenticated && u.HasClaim(c => c.Type == "UserID")).FindFirst("UserID").Value);
+                order.StateID = _context.States.Single(i => i.Name == "Sukurta").ID;
+                _context.Add(order);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Orders));
+            }
 
+            return View(order);
+        }
+
+        private void PopulateClientsDropDown(object selected = null)
+        {
+            var query = from d in _context.Clients
+                        orderby d.Name
+                        select d;
+            ViewBag.ClientID = new SelectList(query.AsNoTracking(), "ID", "FullName", selected);
+        }
+        [HttpGet]
+        public IActionResult Details(int? id)
+        {
+            if(id == null)
+            {
+                return NotFound();
+            }
+            var ord = _context.Orders
+                .Include(c => c.Client)
+                .Include(c => c.State)
+                .Include(c => c.Employee)
+                .Include(c => c.OrderItems)
+                .ThenInclude(c=>c.Product)
+                .SingleOrDefault(c=>c.ID == id);
+
+            if (ord == null)
+            {
+                return null;
+            }
+
+            return View(ord);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Details([Bind("OrderID", "ProductID", "Quantity", "Price")] OrderItem orderItem)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Add(orderItem);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Details));
+            }
+            
+            return RedirectToAction(nameof(Details));
+        }
+        [HttpPost]
+        public async Task<IActionResult> DeleteProductFromOrder(int id, int parent)
+        {
+            var prod = await _context.OrderItems
+                .AsNoTracking()
+                .SingleOrDefaultAsync(m => m.ID == id);
+            if (prod == null)
+            {
+                return RedirectToAction(nameof(Details));
+            }
+
+            try
+            {
+                _context.OrderItems.Remove(prod);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Details), new {  id = parent});
+            }
+            catch (DbUpdateException)
+            {
+                return RedirectToAction(nameof(Details));
+            }
+           
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> MoveToWaiting(int id)
+        {
+            var order = _context.Orders.SingleOrDefault(x => x.ID == id);
+            order.StateID = _context.States.Single(x => x.Name == "Laukiama").ID;
+
+            _context.Update(order);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Details), new { id = id });
+        }
 
 
         public async Task<IActionResult> Clients(string sortOrder, string searchString)

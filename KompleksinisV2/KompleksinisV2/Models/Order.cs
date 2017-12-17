@@ -10,18 +10,24 @@ namespace KompleksinisV2.Models
     public class Order
     {
         public int ID { get; set; }
+
+        [Required(ErrorMessage = "Šis laukas yra privalomas")]
+        [Display(Name = "Klientas")]
         public int ClientID { get; set; }
-        public int ProductID { get; set; }
 
-        public Decimal Quantity { get; set; }
+        public int EmployeeID { get; set; }
 
-        [DataType(DataType.Currency)]
-        [Column(TypeName = "money")]
-        public Decimal Price { get; set; }
+        [MinLength(5, ErrorMessage = "Ne mažiau kaip 5 ženklai")]
+        [MaxLength(100, ErrorMessage = "Ne daugiau kaip 100 simbolių")]
+        [Display(Name = "Pastabos")]
         public string Notes { get; set; }
+        public DateTime CreateDate { get; set; }
+        public int StateID { get; set; }
 
+        public Employee Employee { get; set; }
         public Client Client { get; set; }
-        public Product Product { get; set; }
+        public State State { get; set; }
+        public ICollection<OrderItem> OrderItems { get; set; }
 
     }
 }

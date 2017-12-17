@@ -12,7 +12,7 @@ namespace KompleksinisV2.Models
         public string Name { get; set; }
         public string Description { get; set; }
         public Decimal Price { get; set; }
-        public double? Quantity { get; set; }
+        public Decimal Quantity { get; set; }
 
         public ProductGroup ProductGroup { get; set; }
 

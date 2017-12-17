@@ -1,0 +1,135 @@
+﻿@model KompleksinisV2.Models.Order
+<h2>Užsakymas: #@Model.ID</h2>
+<hr />
+<div class="row">
+    <div class="col-xs-6"><strong>Užsakymas sukurtas:</strong> <em>@Model.CreateDate</em></div>
+    <div class="col-xs-6"><strong>Kliento vardas, pavardė:</strong> <em>@Model.Client.Name @Model.Client.Surname</em></div>
+</div>
+<div class="row">
+    <div class="col-xs-6"><strong>Užsakymo pastabos:</strong> <em>@Model.Notes</em></div>
+    <div class="col-xs-6"><strong>Kliento el. paštas:</strong><em> @Model.Client.Email</em></div>
+</div>
+<div class="row">
+    <div class="col-xs-6">
+        <strong>Užsakymo būsena:</strong>@switch (Model.State.Name)
+        {
+            case "Sukurta": <em class="bg-danger">@Model.State.Name</em>
+                break;
+            case "Laukiama": <em class="bg-info">@Model.State.Name</em>
+                break;
+            case "Pradėta vykdyti": <em class="bg-primary">@Model.State.Name</em>
+                break;
+            case "Uždaryta": <em class="bg-success">@Model.State.Name</em>
+                break;
+        }
+    </div>
+    <div class="col-xs-6"><strong>Kliento telefono numeris:</strong><em> @Model.Client.PhoneNum</em></div>
+</div>
+<div class="row">
+    <div class="col-xs-6"><strong>Užsakymą Užregistravo:</strong> <em>@Model.Employee.Name @Model.Employee.Surname</em></div>
+</div>
+<hr />
+@if (Model.OrderItems.Count == 0)
+{
+    <h3 class="text-center text-danger">Nėra priskirtų prekių!</h3>
+}
+else
+{
+    <table class="table table-hover">
+        <tr>
+            <td><Strong>#</Strong></td>
+            <td><Strong>Pavadinimas</Strong></td>
+            <td><Strong>Kaina (kg)</Strong></td>
+            <td><Strong>Kiekis (kg)</Strong></td>
+            <td><strong>Kaina prekės</strong></td>
+            <td><strong>Nustatymai</strong></td>
+        </tr>
+        @foreach (var item in Model.OrderItems)
+        {
+            <tr>
+                <td>@item.ProductID</td>
+                <td>@item.Product.Name</td>
+                <td>@item.Price</td>
+                @if (Model.State.Name == "Laukiama")
+                {
+                    @if (Model.OrderItems.Where(c => c.ProductID == item.ProductID).Sum(x => x.Quantity) <= item.Product.Quantity)
+                    {
+                        <td class="text-success">@item.Quantity (@Model.OrderItems.Where(c=>c.ProductID == item.ProductID).Sum(x=>x.Quantity)/@item.Product.Quantity)</td>
+                    }
+                    else
+                    {
+                        <td class="text-danger">@item.Quantity (@Model.OrderItems.Where(c => c.ProductID == item.ProductID).Sum(x => x.Quantity)/@item.Product.Quantity)</td>
+                    }
+                }
+                else
+                {
+                    <td>@item.Quantity</td>
+
+                }
+
+
+                <td>@(item.Price * item.Quantity) €</td>
+                <td>
+                    @if (Model.State.Name == "Sukurta")
+                    {
+                        <button type="button" class="btn btn-danger btn-xs" onclick="ajaxDelete(@item.ID)"><i class="glyphicon glyphicon-trash"></i></button>
+                    }
+
+                </td>
+            </tr>
+        }
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td><strong>Iš viso:</strong></td>
+            <td class="text-success">@Model.OrderItems.Sum(x => x.Price * x.Quantity) €</td>
+            <td></td>
+        </tr>
+    </table>
+    @if (Model.State.Name == "Sukurta")
+    {
+        <button type="button" onclick="ajaxMove(@Model.ID)" class="btn btn-success">Pradėti užsakymą</button>
+    }
+
+}
+<hr />
+@if (Model.State.Name == "Sukurta")
+{
+    <h3>Pridėti prekę prie užsakymo:</h3>
+    @await Component.InvokeAsync("AddProduct", new { orderID = Model.ID })
+}
+
+
+<script type="text/javascript">
+    function ajaxDelete(id) {
+        $.ajax({
+            type: "POST",
+            url: "/Sales/DeleteProductFromOrder/" + id,
+            data: {
+                id: id,
+                parent: @Model.ID
+            },
+            success: function (result) {
+                location.reload();
+            },
+            error: function (result) {
+            }
+        });
+    }
+    // from sukurtas to laukiama
+    function ajaxMove(id) {
+        $.ajax({
+            type: "POST",
+            url: "/Sales/MoveToWaiting/" + id,
+            data: {
+                id: id
+            },
+            success: function (result) {
+                location.reload();
+            },
+            error: function(result) {}
+        });
+    }
+
+</script>

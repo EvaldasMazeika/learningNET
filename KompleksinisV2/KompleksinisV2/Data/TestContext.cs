@@ -15,7 +15,9 @@ namespace KompleksinisV2.Data
         public DbSet<Client> Clients { get; set; }
         public DbSet<ProductGroup> ProductGroups { get; set; }
         public DbSet<Product> Products { get; set; }
+        public DbSet<State> States { get; set; }
         public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderItem> OrderItems { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -28,7 +30,9 @@ namespace KompleksinisV2.Data
             modelBuilder.Entity<Client>().ToTable("Clients");
             modelBuilder.Entity<ProductGroup>().ToTable("ProductGroup");
             modelBuilder.Entity<Product>().ToTable("Product");
+            modelBuilder.Entity<State>().ToTable("State");
             modelBuilder.Entity<Order>().ToTable("Order");
+            modelBuilder.Entity<OrderItem>().ToTable("OrderItem");
         }
 
     }
