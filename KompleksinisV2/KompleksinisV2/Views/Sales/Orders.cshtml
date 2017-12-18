@@ -3,19 +3,27 @@
 <hr />
 <a class="btn btn-info btn-lg" role="button" asp-action="NewOrder">Pridėti naują užsakymą</a>
 <hr />
+<form asp-action="Orders" method="get">
+    <div class="form-actions no-color">
+        <p>
+            Ieškoti pagal kliento vardą: <input type="text" name="SearchString" value="@ViewData["currentFilter"]" />
+            <input type="submit" value="Ieškoti" class="btn btn-default" />
+        </p>
+    </div>
+</form>
 <table class="table table-striped">
     <tr>
         <td><strong>ID</strong></td>
-        <td><strong>Klientas</strong></td>
+        <td><strong><a asp-action="Orders" asp-route-sortOrder="@ViewData["clientSortParam"]">Klientas</a></strong></td>
         <td><strong>Pastabos</strong></td>
-        <td><strong>Būsena</strong></td>
+        <td><strong><a asp-action="Orders" asp-route-sortOrder="@ViewData["stateSortParam"]">Būsena</a></strong></td>
         <td><strong>Nustatymai</strong></td>
     </tr>
     @foreach (var item in Model)
     {
         <tr>
             <td>@item.ID</td>
-            <td>@item.Client.Name</td>
+            <td>@item.Client.Name @item.Client.Surname</td>
             <td>@item.Notes</td>
             <td>@item.State.Name</td>
             <td><a class="btn btn-warning btn-xs" role="button" asp-action="Details" asp-route-id="@item.ID">Peržiūrėti</a></td>

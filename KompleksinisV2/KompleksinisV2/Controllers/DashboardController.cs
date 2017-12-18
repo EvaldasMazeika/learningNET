@@ -39,11 +39,6 @@ namespace KompleksinisV2.Controllers
             return View(_list.ToList());
         }
 
-        public IActionResult Reports()
-        {
-            return View();
-        }
-
         [HttpGet]
         public IActionResult NewEmployee()
         {

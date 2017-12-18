@@ -22,6 +22,9 @@ namespace KompleksinisV2.Models
         [Display(Name = "Pastabos")]
         public string Notes { get; set; }
         public DateTime CreateDate { get; set; }
+        public DateTime? StartedDate { get; set; }
+        public DateTime? FinishDate { get; set; }
+
         public int StateID { get; set; }
 
         public Employee Employee { get; set; }

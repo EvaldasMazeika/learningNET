@@ -1,4 +1,5 @@
 ﻿@model KompleksinisV2.Models.Order
+@{ bool canDo = false;}
 <h2>Užsakymas: #@Model.ID</h2>
 <hr />
 <div class="row">
@@ -27,6 +28,7 @@
 </div>
 <div class="row">
     <div class="col-xs-6"><strong>Užsakymą Užregistravo:</strong> <em>@Model.Employee.Name @Model.Employee.Surname</em></div>
+    <div class="col-xs-6"><strong>Kliento adresas:</strong><em> @Model.Client.Adress</em></div>
 </div>
 <hr />
 @if (Model.OrderItems.Count == 0)
@@ -42,7 +44,15 @@ else
             <td><Strong>Kaina (kg)</Strong></td>
             <td><Strong>Kiekis (kg)</Strong></td>
             <td><strong>Kaina prekės</strong></td>
-            <td><strong>Nustatymai</strong></td>
+            @if (Model.State.Name == "Sukurta")
+            {
+                <td><strong>Nustatymai</strong></td>
+            }
+            else
+            {
+                <td><strong>Pelnas</strong></td>
+            }
+
         </tr>
         @foreach (var item in Model.OrderItems)
         {
@@ -54,11 +64,11 @@ else
                 {
                     @if (Model.OrderItems.Where(c => c.ProductID == item.ProductID).Sum(x => x.Quantity) <= item.Product.Quantity)
                     {
-                        <td class="text-success">@item.Quantity (@Model.OrderItems.Where(c=>c.ProductID == item.ProductID).Sum(x=>x.Quantity)/@item.Product.Quantity)</td>
+                        <td>@item.Quantity <i class="text-success">(@Model.OrderItems.Where(c => c.ProductID == item.ProductID).Sum(x => x.Quantity)/@item.Product.Quantity)</i></td>
                     }
-                    else
+                    else if (canDo = true) /*Neradau budo kaip pakeisti reiksme, jos neatvaizduojant*/
                     {
-                        <td class="text-danger">@item.Quantity (@Model.OrderItems.Where(c => c.ProductID == item.ProductID).Sum(x => x.Quantity)/@item.Product.Quantity)</td>
+                        <td>@item.Quantity <i class="text-danger">(@Model.OrderItems.Where(c => c.ProductID == item.ProductID).Sum(x => x.Quantity)/@item.Product.Quantity)</i></td>
                     }
                 }
                 else
@@ -74,6 +84,18 @@ else
                     {
                         <button type="button" class="btn btn-danger btn-xs" onclick="ajaxDelete(@item.ID)"><i class="glyphicon glyphicon-trash"></i></button>
                     }
+                    else
+                    {
+                        @if (item.Price * item.Quantity > item.Product.Price * item.Quantity)
+                        {
+                            <i class="text-success">@(item.Price * item.Quantity - item.Product.Price * item.Quantity) €</i>
+                        }
+                        else
+                        {
+                            <i class="text-danger">@(item.Price * item.Quantity - item.Product.Price * item.Quantity) €</i>
+                        }
+
+                    }
 
                 </td>
             </tr>
@@ -83,16 +105,46 @@ else
             <td></td>
             <td></td>
             <td><strong>Iš viso:</strong></td>
-            <td class="text-success">@Model.OrderItems.Sum(x => x.Price * x.Quantity) €</td>
-            <td></td>
+            <td class="text-primary">@Model.OrderItems.Sum(x => x.Price * x.Quantity) €</td>
+            @if (Model.State.Name != "Sukurta")
+            {
+                <td class="text-primary">@(Model.OrderItems.Sum(x => x.Price * x.Quantity) - Model.OrderItems.Sum(x => x.Product.Price * x.Quantity)) €</td>
+            }
+            else
+            {
+                <td></td>
+            }
+
         </tr>
     </table>
     @if (Model.State.Name == "Sukurta")
     {
         <button type="button" onclick="ajaxMove(@Model.ID)" class="btn btn-success">Pradėti užsakymą</button>
     }
+    else if (Model.State.Name == "Laukiama")
+    {
+        @if (!canDo)
+        {
+            <button type="button" onclick="ajaxStart(@Model.ID)" class="btn btn-success">Pradėti užsakymo vykdymą</button>
+        }
+        else
+        {
+            <h3 class="text-center text-danger">Nėra sandelyje reikalingų visų prekių!</h3>
+        }
 
+    }
+    else if (Model.State.Name == "Pradėta vykdyti")
+    {
+        <h4><strong>Užsakymas pradėtas vykdyti:</strong> <em>@Model.StartedDate</em></h4>
+        <button type="button" onclick="ajaxEnd(@Model.ID)" class="btn btn-success">Užbaigti užsakymą</button>
+    }
+    else if (Model.State.Name == "Uždaryta")
+    {
+        <h4><strong>Užsakymas pradėtas vykdyti:</strong> <em>@Model.StartedDate</em></h4>
+        <h4><strong>Užsakymas uždarytas:</strong> <em>@Model.FinishDate</em></h4>
+    }
 }
+
 <hr />
 @if (Model.State.Name == "Sukurta")
 {
@@ -102,6 +154,36 @@ else
 
 
 <script type="text/javascript">
+    $(document).ready(function () {
+        if ( "@(Model.State.Name)" == "Sukurta") {
+            var label = $('label[for="Price"]');
+            var parenta = label["0"].innerHTML;
+            wat($('#ProductID')["0"].value, label, parenta);
+
+            $('select').on('change', function () {
+                var label = $('label[for="Price"]');
+                wat(this.value, label, parenta);
+            })
+        }
+
+    });
+
+    function wat(id,label,parenta)
+    {
+        $.ajax({
+            type: "POST",
+            url: "/Sales/GetProductPrice/" + id,
+            data: {
+                id: id,
+            },
+            success: function (data) {
+                    label["0"].innerHTML = parenta + '<em class="text-danger"> Savikaina prekės: ' + data + ' €/kg</em>';
+            }
+        });
+
+    }
+
+
     function ajaxDelete(id) {
         $.ajax({
             type: "POST",
@@ -115,21 +197,51 @@ else
             },
             error: function (result) {
             }
-        });
-    }
-    // from sukurtas to laukiama
-    function ajaxMove(id) {
-        $.ajax({
-            type: "POST",
-            url: "/Sales/MoveToWaiting/" + id,
-            data: {
-                id: id
-            },
-            success: function (result) {
-                location.reload();
-            },
-            error: function(result) {}
-        });
-    }
+            });
+        }
+        // from sukurtas to laukiama
+        function ajaxMove(id) {
+            $.ajax({
+                type: "POST",
+                url: "/Sales/MoveToWaiting/" + id,
+                data: {
+                    id: id
+                },
+                success: function (result) {
+                    location.reload();
+                },
+                error: function (result) { }
+            });
+        }
+
+        //from laukiama to pradetas vykdyti
+        function ajaxStart(id) {
+            $.ajax({
+                type: "POST",
+                url: "/Sales/MoveToStarted/" + id,
+                data: {
+                    id: id
+                },
+                success: function (result) {
+                    location.reload();
+                },
+                error: function (result) { }
+            });
+        }
+        //from pradetas to finish
+        function ajaxEnd(id) {
+            $.ajax({
+                type: "POST",
+                url: "/Sales/MoveToFinish/" + id,
+                data: {
+                    id: id
+                },
+                success: function (result) {
+                    location.reload();
+                },
+                error: function (result) { }
+            });
+
+        }
 
 </script>

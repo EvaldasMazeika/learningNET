@@ -28,15 +28,39 @@ namespace KompleksinisV2.Controllers
             return View();
         }
 
-        public async Task<IActionResult> Orders()
+        public async Task<IActionResult> Orders(string sortOrder, string searchString)
         {
-              var ords = _context.Orders
-                  .Include(c => c.Client)
-                  .Include(x => x.State)
-                  .AsNoTracking();
+            ViewData["clientSortParam"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewData["stateSortParam"] = sortOrder == "Date" ? "date_desc" : "Date";
+            ViewData["CurrentFilter"] = searchString;
 
-              return View(await ords.ToListAsync());
-           
+            var orders = _context.Orders
+                          .Include(c => c.Client)
+                          .Include(x => x.State).AsQueryable();
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                orders = orders.Where(s => s.Client.Name.Contains(searchString));
+
+            }
+
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    orders = orders.OrderByDescending(s => s.Client.Name);
+                    break;
+                case "Date":
+                    orders = orders.OrderBy(s => s.State.Name);
+                    break;
+                case "date_desc":
+                    orders = orders.OrderByDescending(s => s.State.Name);
+                    break;
+                default:
+                    orders = orders.OrderBy(s => s.Client.Name);
+                    break;
+            }
+
+            return View(await orders.AsNoTracking().ToListAsync());
         }
 
         [HttpGet]
@@ -72,7 +96,7 @@ namespace KompleksinisV2.Controllers
         [HttpGet]
         public IActionResult Details(int? id)
         {
-            if(id == null)
+            if (id == null)
             {
                 return NotFound();
             }
@@ -81,8 +105,8 @@ namespace KompleksinisV2.Controllers
                 .Include(c => c.State)
                 .Include(c => c.Employee)
                 .Include(c => c.OrderItems)
-                .ThenInclude(c=>c.Product)
-                .SingleOrDefault(c=>c.ID == id);
+                .ThenInclude(c => c.Product)
+                .SingleOrDefault(c => c.ID == id);
 
             if (ord == null)
             {
@@ -101,7 +125,7 @@ namespace KompleksinisV2.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Details));
             }
-            
+
             return RedirectToAction(nameof(Details));
         }
         [HttpPost]
@@ -119,13 +143,13 @@ namespace KompleksinisV2.Controllers
             {
                 _context.OrderItems.Remove(prod);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Details), new {  id = parent});
+                return RedirectToAction(nameof(Details), new { id = parent });
             }
             catch (DbUpdateException)
             {
                 return RedirectToAction(nameof(Details));
             }
-           
+
         }
 
         [HttpPost]
@@ -138,6 +162,53 @@ namespace KompleksinisV2.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Details), new { id = id });
         }
+
+        public async Task<IActionResult> MoveToStarted(int id)
+        {
+            var items = (from o in _context.OrderItems
+                         where o.OrderID == id
+                         group o by o.ProductID into g
+                         select new
+                         {
+                             k = g.Key,
+                             v = g.Sum(x => x.Quantity),
+                         }).ToDictionary(x => x.k, x => x.v);
+
+            foreach (var item in items)
+            {
+                var temp = _context.Products.SingleOrDefault(x => x.ID == item.Key);
+                var numbs = temp.Quantity;
+                numbs = numbs - item.Value;
+                temp.Quantity = numbs;
+                _context.Update(temp);
+            }
+
+            var order = _context.Orders.SingleOrDefault(x => x.ID == id);
+            order.StateID = _context.States.Single(x => x.Name == "Pradėta vykdyti").ID;
+            order.StartedDate = DateTime.Now;
+
+            _context.Update(order);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Details), new { id = id });
+        }
+
+        public async Task<IActionResult> MoveToFinish(int id)
+        {
+            var order = _context.Orders.SingleOrDefault(x => x.ID == id);
+            order.StateID = _context.States.Single(x => x.Name == "Uždaryta").ID;
+            order.FinishDate = DateTime.Now;
+
+            _context.Update(order);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Details), new { id = id });
+        }
+
+        public async Task<decimal> GetProductPrice(int id)
+        {
+            var dem = await _context.Products.SingleOrDefaultAsync(x => x.ID == id);
+            return dem.Price;
+        }
+
 
 
         public async Task<IActionResult> Clients(string sortOrder, string searchString)
@@ -208,7 +279,7 @@ namespace KompleksinisV2.Controllers
             {
                 return NotFound();
             }
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 _context.Update(client);
                 await _context.SaveChangesAsync();
