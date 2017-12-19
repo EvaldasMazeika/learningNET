@@ -6,7 +6,7 @@
 <table class="table table-bordered">
     @foreach (var item in Model)
     {
-        <div></div>
+        
         <tr>
             <td><a asp-action="Comments" asp-route-id="@item.ID">@item.Title</a></td>
             <td>@item.Employee.Name @item.Employee.Surname</td>
