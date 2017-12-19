@@ -22,13 +22,14 @@ namespace KompleksinisV2.Models
         [Display(Name = "Pavardė")]
         public string Surname { get; set; }
 
-        [EmailAddress]
+        [EmailAddress(ErrorMessage = "Netinkamas formatas")]
         [Required(ErrorMessage = "Šis laukas yra privalomas")]
         [Display(Name = "El. paštas")]
         public string Email { get; set; }
 
         [Required(ErrorMessage = "Šis laukas yra privalomas")]
         [DataType(DataType.PhoneNumber)]
+        [RegularExpression("^([+])([0-9]{11})$", ErrorMessage = "Netinkamas formatas")]
         [Display(Name = "Telefono numeris")]
         public string PhoneNum { get; set; }
 

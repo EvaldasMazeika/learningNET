@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace KompleksinisV2.Models
 {
-    public class Sector
+    public class Department
     {
         public int ID { get; set; }
         public string Name { get; set; }

@@ -2,12 +2,24 @@
 
 <h2>Redaguokite darbuotojo duomenis</h2>
 <hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="EditEmployee">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="ID" />
-            <input type="hidden" asp-for="Password"/>
+<form asp-action="NewEmployee">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="ID" />
+    <input type="hidden" asp-for="Password" />
+    <div class="row">
+        <div class="col-xs-6">
+            <h4>Prisijungimo duomenys</h4>
+            <div class="form-group">
+                <label asp-for="Email" class="control-label"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Išsaugoti" class="btn btn-default" />
+            </div>
+        </div>
+        <div class="col-xs-6">
+            <h4>Asmeniniai duomenys</h4>
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
                 <input asp-for="Name" class="form-control" />
@@ -17,11 +29,6 @@
                 <label asp-for="Surname" class="control-label"></label>
                 <input asp-for="Surname" class="form-control" />
                 <span asp-validation-for="Surname" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Email" class="control-label"></label>
-                <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="BirthDate" class="control-label"></label>
@@ -34,19 +41,9 @@
                 <span asp-validation-for="MobileNumber" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="PositionID" class="control-label"></label>
-                <select asp-for="PositionID" class="form-control" asp-items="ViewBag.PositionID"></select>
-                <span asp-validation-for="PositionID" class="text-danger"></span>
+                <label asp-for="DepartmentID" class="control-label"></label>
+                <select asp-for="DepartmentID" class="form-control" asp-items="ViewBag.DepartmentID"></select>
             </div>
-            <div class="form-group">
-                <label asp-for="SectorID" class="control-label"></label>
-                <select asp-for="SectorID" class="form-control" asp-items="ViewBag.SectorID"></select>
-                <span asp-validation-for="SectorID" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Išsaugoti" class="btn btn-default" />
-            </div>
-        </form>
+        </div>
     </div>
-</div>
-
+</form>

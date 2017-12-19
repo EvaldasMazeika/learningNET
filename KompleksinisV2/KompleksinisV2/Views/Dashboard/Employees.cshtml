@@ -7,7 +7,6 @@
     <tr>
         <td><strong>Vardas Pavardė</strong></td>
         <td><strong>El. paštas</strong></td>
-        <td><strong>Pareigos</strong></td>
         <td><strong>Skyrius</strong></td>
         <td><strong>Nustatymai</strong></td>
     </tr>
@@ -16,8 +15,7 @@
         <tr>
             <td>@item.Name @item.Surname</td>
             <td>@item.Email</td>
-            <td>@item.Position.Name</td>
-            <td>@item.Sector.Name</td>
+            <td>@item.Department.Name</td>
             <td>
                 @if (User.Identities.First(u => u.IsAuthenticated && u.HasClaim(c => c.Type == "UserID")).FindFirst("UserID").Value != String.Join("",item.ID))
                 {
@@ -64,7 +62,7 @@
                     type: "POST",
                     url: "/Dashboard/DeleteEmployee/" + recipient,
                     data: {
-                        id: recipient, // < note use of 'this' here
+                        id: recipient, 
                     },
                     success: function (result) {
                         location.reload();

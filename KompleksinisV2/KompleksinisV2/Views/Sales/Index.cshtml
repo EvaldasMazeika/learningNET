@@ -1,14 +1,16 @@
-﻿@using System.Security.Claims;
+﻿@model IEnumerable<KompleksinisV2.Models.Message>
 
-@if (!User.Identities.Any(u => u.IsAuthenticated))
-{
-    <h1>Hello World</h1>
-}
-else
-{
-    <h1>
-        Hello @User.Identities.First(
-      u => u.IsAuthenticated &&
-      u.HasClaim(c => c.Type == ClaimTypes.Name)).FindFirst(ClaimTypes.Name).Value
-    </h1>
-}
+
+<h1>Pardavimų skyriaus pranešimai</h1>
+<hr />
+<table class="table table-bordered">
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td><a asp-action="Comments" asp-route-id="@item.ID">@item.Title</a></td>
+            <td>@item.Employee.Name @item.Employee.Surname</td>
+            <td>@item.WriteDate</td>
+        </tr>
+    }
+
+</table>

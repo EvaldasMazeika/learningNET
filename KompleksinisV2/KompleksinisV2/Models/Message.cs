@@ -18,11 +18,16 @@ namespace KompleksinisV2.Models
 
         [Required(ErrorMessage = "Šis laukas yra privalomas")]
         [MinLength(5, ErrorMessage = "Ne mažiau kaip 5 ženklai")]
+        [DataType(DataType.MultilineText)]
         [Display(Name = "Tekstas")]
         public string WrittenText { get; set; }
         public DateTime WriteDate { get; set; }
 
+        [Display(Name = "Skyrius")]
+        public int DepartmentID { get; set; }
+
         public Employee Employee { get; set; }
         public ICollection<Comments> Comments { get; set; }
+        public Department Department { get; set; }
     }
 }

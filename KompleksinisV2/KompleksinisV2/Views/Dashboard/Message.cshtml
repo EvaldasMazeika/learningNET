@@ -1,18 +1,35 @@
-﻿@model Message
+﻿@model KompleksinisV2.Models.Message
 
-
-<h1>Sukurkite pranešimą</h1>
+<h2>Sukurkite pranešimą</h2>
 <hr />
-<form asp-controller="Dashboard" asp-action="Message" method="post">
-    <div class="form-group">
-        <label asp-for="Title" class="control-label"></label>
-        <input asp-for="Title" class="form-control" />
-        <span asp-validation-for="Title" class="text-danger"></span>
+<form asp-action="Message">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="row">
+        <div class="col-xs-6">
+            <div class="form-group">
+                <label asp-for="Title" class="control-label"></label>
+                <input asp-for="Title" class="form-control" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-xs-6">
+            <div class="form-group">
+                <label asp-for="DepartmentID" class="control-label"></label>
+                <select asp-for="DepartmentID" class="form-control" asp-items="ViewBag.DepartmentID"></select>
+            </div>
+        </div>
     </div>
-    <div class="form-group">
-        <label asp-for="WrittenText" class="control-label"></label>
-        <textarea asp-for="WrittenText"  class="form-control" rows="3"></textarea>
-        <span asp-validation-for="WrittenText" class="text-danger"></span>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="form-group">
+                <label asp-for="WrittenText" class="control-label"></label>
+                <textarea asp-for="WrittenText" class="form-control"></textarea>
+                <span asp-validation-for="WrittenText" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Išsaugoti" class="btn btn-default" />
+            </div>
+        </div>
     </div>
-    <button type="submit" class="btn btn-default">Išsaugoti</button>
 </form>
+

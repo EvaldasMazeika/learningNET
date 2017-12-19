@@ -16,16 +16,19 @@ namespace KompleksinisV2.Controllers
     {
         private TestContext _context;
 
-        public object DataTime { get; private set; }
-
         public SalesController(TestContext context)
         {
             _context = context;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var text = _context.Messages.Where(x => x.DepartmentID == _context.Departments.Single(z => z.Name == "Pardavimai").ID)
+                .OrderByDescending(x => x.WriteDate)
+                .Include(c => c.Employee)
+                .AsNoTracking();
+
+            return View(await text.ToListAsync());
         }
 
         public async Task<IActionResult> Orders(string sortOrder, string searchString)
@@ -310,6 +313,43 @@ namespace KompleksinisV2.Controllers
                 return RedirectToAction(nameof(client));
             }
         }
+
+
+        [HttpGet]
+        public IActionResult Comments(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var _query = _context.Messages
+                .Include(c => c.Comments)
+                .SingleOrDefault(x => x.ID == id);
+
+            return View(_query);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Comments([Bind("MessageID", "Comment")] Comments comments)
+        {
+            if (ModelState.IsValid)
+            {
+                int _id = Int32.Parse(User.Identities.First(u => u.IsAuthenticated && u.HasClaim(c => c.Type == "UserID")).FindFirst("UserID").Value);
+
+                string firsName = _context.Employees.SingleOrDefault(x => x.ID == _id).Name;
+                string secondName = _context.Employees.SingleOrDefault(x => x.ID == _id).Surname;
+
+                comments.ComDate = DateTime.Now;
+                comments.Fullname = firsName + " " + secondName;
+
+                _context.Add(comments);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Comments));
+            }
+            return View();
+        }
+
+
 
         public IActionResult Reports()
         {

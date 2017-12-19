@@ -7,8 +7,7 @@ namespace KompleksinisV2.Data
     {
         public TestContext(DbContextOptions<TestContext> options) :base(options)
         {}
-        public DbSet<Position> Positions { get; set; }
-        public DbSet<Sector> Sectors { get; set; }
+        public DbSet<Department> Departments { get; set; }
         public DbSet<Employee> Employees { get; set; }
         public DbSet<Message> Messages { get; set; }
         public DbSet<Comments> Comments { get; set; }
@@ -22,8 +21,7 @@ namespace KompleksinisV2.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Position>().ToTable("Position");
-            modelBuilder.Entity<Sector>().ToTable("Sector");
+            modelBuilder.Entity<Department>().ToTable("Department");
             modelBuilder.Entity<Employee>().ToTable("Employee");
             modelBuilder.Entity<Message>().ToTable("Message");
             modelBuilder.Entity<Comments>().ToTable("Comments");

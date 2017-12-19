@@ -25,7 +25,7 @@ namespace KompleksinisV2.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var text = _context.Messages
+            var text = _context.Messages.Where(x=>x.DepartmentID == _context.Departments.Single(z=>z.Name == "Administracija").ID)
                 .OrderByDescending(x=> x.WriteDate)
                 .Include(c => c.Employee)
                 .AsNoTracking();
@@ -35,15 +35,14 @@ namespace KompleksinisV2.Controllers
 
         public IActionResult Employees()
         {
-            var _list = _context.Employees.Include(c => c.Position).Include(x => x.Sector).AsNoTracking();
+            var _list = _context.Employees.Include(x => x.Department).AsNoTracking();
             return View(_list.ToList());
         }
 
         [HttpGet]
         public IActionResult NewEmployee()
         {
-            PopulatePositionDropDown();
-            PopulateSectorDropDown();
+            PopulateDepartmentDropDown();
             return View();
         }
 
@@ -62,8 +61,8 @@ namespace KompleksinisV2.Controllers
             catch (Exception)
             {throw;}
 
-            PopulatePositionDropDown(employee.PositionID);
-            PopulateSectorDropDown(employee.SectorID);
+            
+            PopulateDepartmentDropDown(employee.DepartmentID);
             return View(employee);
         }
 
@@ -82,8 +81,8 @@ namespace KompleksinisV2.Controllers
             {
                 return NotFound();
             }
-            PopulatePositionDropDown(query.PositionID);
-            PopulateSectorDropDown(query.SectorID);
+            
+            PopulateDepartmentDropDown(query.DepartmentID);
             return View(query);
         }
 
@@ -98,7 +97,7 @@ namespace KompleksinisV2.Controllers
             var whatToUpdat = await _context.Employees.SingleOrDefaultAsync(s => s.ID == id);
 
             if (await TryUpdateModelAsync<Employee>(
-                whatToUpdat, "", i=> i.Name, i=> i.Surname, i=> i.Email, i=> i.Password, i=> i.BirthDate, i=> i.MobileNumber, i=> i.PositionID, i=> i.SectorID))
+                whatToUpdat, "", i=> i.Name, i=> i.Surname, i=> i.Email, i=> i.Password, i=> i.BirthDate, i=> i.MobileNumber, i=> i.DepartmentID))
 
             {
                 try
@@ -133,28 +132,18 @@ namespace KompleksinisV2.Controllers
             }
             catch (DbUpdateException /* ex */)
             {
-                //Log the error (uncomment ex variable name and write a log.)
                 return RedirectToAction(nameof(Employees));
             }
         }
 
 
 
-        private void PopulateSectorDropDown(object selected = null)
+        private void PopulateDepartmentDropDown(object selected = null)
         {
-            var query = from d in _context.Sectors
+            var query = from d in _context.Departments
                         orderby d.Name
                         select d;
-            ViewBag.SectorID = new SelectList(query.AsNoTracking(), "ID", "Name",selected);
-        }
-
-        private void PopulatePositionDropDown(object selected = null)
-        {
-            var query = from d in _context.Positions
-                        orderby d.Name
-                        select d;
-
-            ViewBag.PositionID = new SelectList(query.AsNoTracking(), "ID", "Name",selected);
+            ViewBag.DepartmentID = new SelectList(query.AsNoTracking(), "ID", "Name",selected);
         }
 
         [HttpGet]
@@ -196,12 +185,13 @@ namespace KompleksinisV2.Controllers
         [HttpGet]
         public IActionResult Message()
         {
+            PopulateDepartmentDropDown();
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Message([Bind("Title", "WrittenText")] Message message)
+        public async Task<IActionResult> Message([Bind("Title", "WrittenText", "DepartmentID")] Message message)
         {
             Employee emp = _context.Employees.Single(x => x.ID == Int32.Parse(User.Identities.First(u => u.IsAuthenticated && u.HasClaim(c => c.Type == "UserID")).FindFirst("UserID").Value) );
             try

@@ -22,7 +22,7 @@ namespace KompleksinisV2.Models
         [Display(Name = "Pavardė")]
         public string Surname { get; set; }
 
-        [EmailAddress]
+        [EmailAddress(ErrorMessage ="Netinkamas formatas")]
         [Required(ErrorMessage = "Šis laukas yra privalomas")]
         [Display(Name = "El. paštas")]
         public string Email { get; set; }
@@ -42,19 +42,15 @@ namespace KompleksinisV2.Models
 
         [Required(ErrorMessage = "Šis laukas yra privalomas")]
         [DataType(DataType.PhoneNumber)]
+        [RegularExpression("^([+])([0-9]{11})$", ErrorMessage = "Netinkamas formatas")]
         [Display(Name = "Telefono numeris")]
         public string MobileNumber { get; set; }
 
         [Required(ErrorMessage = "Šis laukas yra privalomas")]
-        [Display(Name = "Pozicija")]
-        public int PositionID { get; set; }
-
-        [Required(ErrorMessage = "Šis laukas yra privalomas")]
         [Display(Name = "Skyrius")]
-        public int SectorID { get; set; }
+        public int DepartmentID { get; set; }
 
-        public Position Position { get; set; }
-        public Sector Sector { get; set; }
+        public Department Department { get; set; }
 
     }
 }

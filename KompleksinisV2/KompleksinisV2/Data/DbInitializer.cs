@@ -17,33 +17,24 @@ namespace KompleksinisV2.Data
                 return;
             }
 
-            var positions = new Position[]
+            var sectors = new Department[]
             {
-                new Position{Name="Vadovas"},
-                new Position{Name="Supirkėjas"}
-            };
-            foreach (var pos in positions)
-            {
-                context.Positions.Add(pos);
-            }
-            context.SaveChanges();
-
-            var sectors = new Sector[]
-            {
-                new Sector{Name="Supirkimas"},
-                new Sector{Name="Administracija"}
+                new Department{Name="Administracija"},
+                new Department{Name="Pardavimai"},
+                new Department{Name="Sandėlis"}
             };
             foreach (var sec in sectors)
             {
-                context.Sectors.Add(sec);
+                context.Departments.Add(sec);
             }
             context.SaveChanges();
 
 
             var employees = new Employee[]
             {
-                new Employee{Name="Evaldas",Surname="Jonuos",Email="i@i.i",Password="evas",BirthDate=new DateTime(2017,01,01),MobileNumber="+37060000000",PositionID=positions.Single( i => i.Name == "Vadovas").ID,SectorID=sectors.Single( i => i.Name == "Administracija").ID},
-                new Employee{Name="Jonas",Surname="Enoas",Email="a@a.a",Password="jonas",BirthDate=new DateTime(2010,11,11),MobileNumber="+37099900009",PositionID=positions.Single( i => i.Name == "Supirkėjas").ID,SectorID=sectors.Single( i => i.Name == "Supirkimas").ID},
+                new Employee{Name="Evaldas",Surname="Jonuos",Email="i@i.i",Password="evas",BirthDate=new DateTime(2017,01,01),MobileNumber="+37060000000",DepartmentID=sectors.Single( i => i.Name == "Administracija").ID},
+                new Employee{Name="Jonas",Surname="Enoas",Email="a@a.a",Password="evas",BirthDate=new DateTime(2010,11,11),MobileNumber="+37099900009",DepartmentID=sectors.Single( i => i.Name == "Pardavimai").ID},
+                new Employee{Name="Petras",Surname="Petraitis",Email="z@z.z",Password="evas",BirthDate=new DateTime(1995,11,11),MobileNumber="+37099900009",DepartmentID=sectors.Single( i => i.Name == "Sandėlis").ID}
             };
             foreach (Employee emp in employees)
             {

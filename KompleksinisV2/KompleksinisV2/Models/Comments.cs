@@ -15,6 +15,7 @@ namespace KompleksinisV2.Models
 
         [Required(ErrorMessage = "Šis laukas yra privalomas")]
         [MinLength(5, ErrorMessage = "Ne mažiau kaip 5 ženklai")]
+        [DataType(DataType.MultilineText)]
         [Display(Name ="Komentaras")]
         public string Comment { get; set; }
 
