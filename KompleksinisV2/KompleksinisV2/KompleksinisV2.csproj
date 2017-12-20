@@ -18,4 +18,8 @@
     <Folder Include="Views\Dashboard\Components\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Kompleksinis.Tests\Kompleksinis.Tests.csproj" />
+  </ItemGroup>
+
 </Project>
