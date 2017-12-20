@@ -22,6 +22,8 @@ namespace KompleksinisV2.Models
         [Range(0.01, 9999.99, ErrorMessage ="Turi būti intervale nuo 0.01 iki 9999.99")]
         [Display(Name = "Kaina (kg)")]
         public Decimal Price { get; set; }
+        public Decimal? TotalPrice { get; set; }
+        public Decimal? TotalProfit { get; set; }
 
         public Order Order { get; set; }
         public Product Product { get; set; }

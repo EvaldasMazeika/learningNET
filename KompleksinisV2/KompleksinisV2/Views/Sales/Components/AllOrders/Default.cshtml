@@ -1,0 +1,17 @@
+﻿@model KompleksinisV2.Models.ViewModels.AllOrdersViewModel
+<div>
+    <form class="form-inline" asp-action="AllOrdersReport" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            <label asp-for="BeginDate" class="control-label"></label>
+            <input asp-for="BeginDate" class="form-control" />
+            <span asp-validation-for="BeginDate" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="EndDate" class="control-label"></label>
+            <input asp-for="EndDate" class="form-control" />
+            <span asp-validation-for="EndDate" class="text-danger"></span>
+        </div>
+        <button type="submit" class="btn btn-default">Generuoti</button>
+    </form>
+</div>

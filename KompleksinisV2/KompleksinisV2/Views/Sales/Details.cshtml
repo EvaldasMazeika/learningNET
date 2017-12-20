@@ -77,14 +77,20 @@ else
 
                 }
 
-
-                <td>@(item.Price * item.Quantity) €</td>
+                @if (Model.State.Name == "Sukurta" || Model.State.Name == "Laukiama")
+                {
+                    <td>@(item.Price * item.Quantity) €</td>
+                }
+                else
+                {
+                    <td>@item.TotalPrice €</td>
+                }
                 <td>
                     @if (Model.State.Name == "Sukurta")
                     {
                         <button type="button" class="btn btn-danger btn-xs" onclick="ajaxDelete(@item.ID)"><i class="glyphicon glyphicon-trash"></i></button>
                     }
-                    else
+                    else if (Model.State.Name == "Laukiama")
                     {
                         @if (item.Price * item.Quantity > item.Product.Price * item.Quantity)
                         {
@@ -96,6 +102,17 @@ else
                         }
 
                     }
+                    else
+                    {
+                        @if (item.TotalProfit > 0)
+                        {
+                            <i class="text-success">@item.TotalProfit €</i>
+                        }
+                        else
+                        {
+                            <i class="text-danger">@item.TotalProfit €</i>
+                        }
+                    }
 
                 </td>
             </tr>
@@ -105,16 +122,38 @@ else
             <td></td>
             <td></td>
             <td><strong>Iš viso:</strong></td>
-            <td class="text-primary">@Model.OrderItems.Sum(x => x.Price * x.Quantity) €</td>
-            @if (Model.State.Name != "Sukurta")
+            @if (Model.State.Name == "Sukurta" || Model.State.Name == "Laukiama")
+            {
+                <td class="text-primary">@Model.OrderItems.Sum(x => x.Price * x.Quantity) €</td>
+            }
+            else
+            {
+                <td class="text-primary">@Model.TotalPrice €</td>
+            }
+
+            @if (Model.State.Name == "Sukurta")
+            {
+                <td></td>
+
+            }
+            else if (Model.State.Name == "Laukiama")
             {
                 <td class="text-primary">@(Model.OrderItems.Sum(x => x.Price * x.Quantity) - Model.OrderItems.Sum(x => x.Product.Price * x.Quantity)) €</td>
             }
             else
             {
-                <td></td>
-            }
+                @if (Model.TotalProfit > 0)
+                {
+                    <td class="text-success">@Model.TotalProfit €</td>
 
+                }
+                else
+                {
+                    <td class="text-danger">@Model.TotalProfit €</td>
+
+                }
+
+            }
         </tr>
     </table>
     @if (Model.State.Name == "Sukurta")

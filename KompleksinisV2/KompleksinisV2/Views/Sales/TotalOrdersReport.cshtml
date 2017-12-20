@@ -1,0 +1,52 @@
+﻿@model IEnumerable<KompleksinisV2.Models.Order>
+@if (Model.Count() == 0)
+{
+    <h2 class="text-center text-danger">Nėra įrašų!</h2>
+
+}
+else
+{
+    <div class="row">
+        <div class="col-md-6">
+            <h2>Darbuotojas: <em>@ViewData["employee"]</em></h2>
+        </div>
+        <div class="col-md-6">
+            <h3>Periodas nuo: <em>@ViewData["BeginDate"]</em></h3>
+            <h3>Periodas iki: <em>@ViewData["EndDate"]</em></h3>
+        </div>
+    </div>
+    <hr />
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Užsakymo sukūrimo data</th>
+                <th>Užsakymo vykdymo pradžios data</th>
+                <th>Užsakymo vykdymo pabaigos data</th>
+                <th>Užsakymo apyvarta</th>
+                <th>Užsakymo pelnas</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.ID</td>
+                    <td>@item.CreateDate</td>
+                    <td>@item.StartedDate</td>
+                    <td>@item.FinishDate</td>
+                    <td>@item.TotalPrice</td>
+                    <td>@item.TotalProfit</td>
+                </tr>
+            }
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><strong>Iš viso:</strong></td>
+                <td><strong>@Model.Sum(c => c.TotalPrice)</strong></td>
+                <td><strong>@Model.Sum(c => c.TotalProfit)</strong></td>
+            </tr>
+        </tbody>
+    </table>
+}

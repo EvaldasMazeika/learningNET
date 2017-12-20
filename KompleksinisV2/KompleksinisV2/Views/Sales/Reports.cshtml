@@ -1,7 +1,7 @@
-﻿
-@{
-    ViewData["Title"] = "Reports";
-}
-
-<h2>Reports</h2>
-
+﻿<h2>Ataskaitų pasirinkimai</h2>
+<hr />
+<h4>1. Pardavimų skyriaus užsakymai pagal darbuotoją ir periodą:</h4>
+@await Component.InvokeAsync("TotalOrders")
+<hr />
+<h4>2. Visi užsakymai pagal periodą:</h4>
+@await  Component.InvokeAsync("AllOrders")

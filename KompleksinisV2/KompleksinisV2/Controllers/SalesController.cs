@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using KompleksinisV2.Data;
 using KompleksinisV2.Models;
+using KompleksinisV2.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -168,6 +169,19 @@ namespace KompleksinisV2.Controllers
 
         public async Task<IActionResult> MoveToStarted(int id)
         {
+            var tmp = _context.OrderItems.Where(x => x.OrderID == id);
+            Decimal totalPrice= 0, totalProfit =0;
+
+            foreach (var item in tmp)
+            {
+                item.TotalPrice = item.Price * item.Quantity;
+                item.TotalProfit = item.TotalPrice - (item.Quantity * _context.Products.Single(c => c.ID == item.ProductID).Price);
+                
+                totalPrice +=  item.TotalPrice ?? 0;
+                totalProfit += item.TotalProfit ?? 0;
+                _context.Update(item);
+            }
+
             var items = (from o in _context.OrderItems
                          where o.OrderID == id
                          group o by o.ProductID into g
@@ -188,6 +202,8 @@ namespace KompleksinisV2.Controllers
 
             var order = _context.Orders.SingleOrDefault(x => x.ID == id);
             order.StateID = _context.States.Single(x => x.Name == "Pradėta vykdyti").ID;
+            order.TotalPrice = totalPrice;
+            order.TotalProfit = totalProfit;
             order.StartedDate = DateTime.Now;
 
             _context.Update(order);
@@ -355,6 +371,45 @@ namespace KompleksinisV2.Controllers
         {
             return View();
         }
+
+        [HttpPost]
+        public IActionResult TotalOrdersReport([Bind("EmployeeID", "BeginDate", "EndDate")] TotalOrdersViewModel totalOrdersViewModal)
+        {
+            ViewData["employee"] = _context.Employees.Single(x => x.ID == totalOrdersViewModal.EmployeeID).FullName;
+            ViewData["BeginDate"] = totalOrdersViewModal.BeginDate;
+            ViewData["EndDate"] = totalOrdersViewModal.EndDate;
+            var query = _context.Orders.Where(x => x.EmployeeID == totalOrdersViewModal.EmployeeID && (x.StateID == _context.States.Single(c=>c.Name=="Uždaryta").ID) && (x.CreateDate >= totalOrdersViewModal.BeginDate && x.CreateDate <= totalOrdersViewModal.EndDate));
+            return View(query.ToList());
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AllOrdersReport([Bind("BeginDate", "EndDate")] AllOrdersViewModel allOrdersViewModel)
+        {
+            ViewData["BeginDate"] = allOrdersViewModel.BeginDate;
+            ViewData["EndDate"] = allOrdersViewModel.EndDate;
+
+            var items = await _context.Orders.Where(x=> x.StateID == _context.States.Single(c => c.Name == "Uždaryta").ID && (x.CreateDate >= allOrdersViewModel.BeginDate && x.CreateDate <= allOrdersViewModel.EndDate)).ToListAsync();
+
+            var emps = items.Select(z => z.EmployeeID).Distinct();
+
+            var query = new List<AllOrdersResultViewModel>();
+
+            foreach (var item in emps)
+            {
+                var temp = new AllOrdersResultViewModel
+                {
+                    EmployeeID = item,
+                    FullName = _context.Employees.Single(x => x.ID == item).FullName,
+                    OrdersNumber = items.Where(x => x.EmployeeID == item).Count(),
+                    TotalPrice = items.Where(x => x.EmployeeID == item).Select(a => a.TotalPrice).Sum() ?? 0,
+                    TotalProfit = items.Where(x => x.EmployeeID == item).Select(a => a.TotalProfit).Sum() ?? 0
+                };
+                query.Add(temp);
+            }
+
+            return View(query);
+        }
+
 
     }
 }

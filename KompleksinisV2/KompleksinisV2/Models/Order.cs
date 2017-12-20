@@ -24,6 +24,8 @@ namespace KompleksinisV2.Models
         public DateTime CreateDate { get; set; }
         public DateTime? StartedDate { get; set; }
         public DateTime? FinishDate { get; set; }
+        public Decimal? TotalPrice { get; set; }
+        public Decimal? TotalProfit { get; set; }
 
         public int StateID { get; set; }
 

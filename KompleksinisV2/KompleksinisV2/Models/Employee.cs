@@ -52,5 +52,13 @@ namespace KompleksinisV2.Models
 
         public Department Department { get; set; }
 
+        public string FullName
+        {
+            get
+            {
+                return Name + " " + Surname;
+            }
+        }
+
     }
 }
