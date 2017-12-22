@@ -23,7 +23,7 @@ namespace KompleksinisV2.Models.ViewModels
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
             int result = DateTime.Compare(BeginDate, EndDate);
-            if (result <= 0)
+            if (result >= 0)
             {
                 yield return new ValidationResult("Blogi laikotarpiai");
             }

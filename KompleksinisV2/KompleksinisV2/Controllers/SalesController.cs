@@ -375,39 +375,48 @@ namespace KompleksinisV2.Controllers
         [HttpPost]
         public IActionResult TotalOrdersReport([Bind("EmployeeID", "BeginDate", "EndDate")] TotalOrdersViewModel totalOrdersViewModal)
         {
-            ViewData["employee"] = _context.Employees.Single(x => x.ID == totalOrdersViewModal.EmployeeID).FullName;
-            ViewData["BeginDate"] = totalOrdersViewModal.BeginDate;
-            ViewData["EndDate"] = totalOrdersViewModal.EndDate;
-            var query = _context.Orders.Where(x => x.EmployeeID == totalOrdersViewModal.EmployeeID && (x.StateID == _context.States.Single(c=>c.Name=="Uždaryta").ID) && (x.CreateDate >= totalOrdersViewModal.BeginDate && x.CreateDate <= totalOrdersViewModal.EndDate));
-            return View(query.ToList());
+            if(ModelState.IsValid)
+            {
+                ViewData["employee"] = _context.Employees.Single(x => x.ID == totalOrdersViewModal.EmployeeID).FullName;
+                ViewData["BeginDate"] = totalOrdersViewModal.BeginDate;
+                ViewData["EndDate"] = totalOrdersViewModal.EndDate;
+                var query = _context.Orders.Where(x => x.EmployeeID == totalOrdersViewModal.EmployeeID && (x.StateID == _context.States.Single(c => c.Name == "Uždaryta").ID) && (x.CreateDate >= totalOrdersViewModal.BeginDate && x.CreateDate <= totalOrdersViewModal.EndDate));
+                return View(query.ToList());
+            }
+            return RedirectToAction(nameof(Reports));
         }
 
         [HttpPost]
         public async Task<IActionResult> AllOrdersReport([Bind("BeginDate", "EndDate")] AllOrdersViewModel allOrdersViewModel)
         {
-            ViewData["BeginDate"] = allOrdersViewModel.BeginDate;
-            ViewData["EndDate"] = allOrdersViewModel.EndDate;
-
-            var items = await _context.Orders.Where(x=> x.StateID == _context.States.Single(c => c.Name == "Uždaryta").ID && (x.CreateDate >= allOrdersViewModel.BeginDate && x.CreateDate <= allOrdersViewModel.EndDate)).ToListAsync();
-
-            var emps = items.Select(z => z.EmployeeID).Distinct();
-
-            var query = new List<AllOrdersResultViewModel>();
-
-            foreach (var item in emps)
+            if(ModelState.IsValid)
             {
-                var temp = new AllOrdersResultViewModel
-                {
-                    EmployeeID = item,
-                    FullName = _context.Employees.Single(x => x.ID == item).FullName,
-                    OrdersNumber = items.Where(x => x.EmployeeID == item).Count(),
-                    TotalPrice = items.Where(x => x.EmployeeID == item).Select(a => a.TotalPrice).Sum() ?? 0,
-                    TotalProfit = items.Where(x => x.EmployeeID == item).Select(a => a.TotalProfit).Sum() ?? 0
-                };
-                query.Add(temp);
-            }
+                ViewData["BeginDate"] = allOrdersViewModel.BeginDate;
+                ViewData["EndDate"] = allOrdersViewModel.EndDate;
 
-            return View(query);
+                var items = await _context.Orders.Where(x => x.StateID == _context.States.Single(c => c.Name == "Uždaryta").ID && (x.CreateDate >= allOrdersViewModel.BeginDate && x.CreateDate <= allOrdersViewModel.EndDate)).ToListAsync();
+
+                var emps = items.Select(z => z.EmployeeID).Distinct();
+
+                var query = new List<AllOrdersResultViewModel>();
+
+                foreach (var item in emps)
+                {
+                    var temp = new AllOrdersResultViewModel
+                    {
+                        EmployeeID = item,
+                        FullName = _context.Employees.Single(x => x.ID == item).FullName,
+                        OrdersNumber = items.Where(x => x.EmployeeID == item).Count(),
+                        TotalPrice = items.Where(x => x.EmployeeID == item).Select(a => a.TotalPrice).Sum() ?? 0,
+                        TotalProfit = items.Where(x => x.EmployeeID == item).Select(a => a.TotalProfit).Sum() ?? 0
+                    };
+                    query.Add(temp);
+                }
+
+                return View(query);
+            }
+            return RedirectToAction(nameof(Reports));
+
         }
 
 
