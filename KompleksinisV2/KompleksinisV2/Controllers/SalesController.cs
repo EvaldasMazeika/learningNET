@@ -394,7 +394,7 @@ namespace KompleksinisV2.Controllers
                 ViewData["BeginDate"] = allOrdersViewModel.BeginDate;
                 ViewData["EndDate"] = allOrdersViewModel.EndDate;
 
-                var items = await _context.Orders.Where(x => x.StateID == _context.States.Single(c => c.Name == "Uždaryta").ID && (x.CreateDate >= allOrdersViewModel.BeginDate && x.CreateDate <= allOrdersViewModel.EndDate)).ToListAsync();
+                var items = await _context.Orders.Where(x => x.StateID == _context.States.Single(c => c.Name == "Uždaryta").ID && (x.Employee.DepartmentID == _context.Departments.Single(c => c.Name == "Pardavimai").ID) && (x.CreateDate >= allOrdersViewModel.BeginDate && x.CreateDate <= allOrdersViewModel.EndDate)).ToListAsync();
 
                 var emps = items.Select(z => z.EmployeeID).Distinct();
 

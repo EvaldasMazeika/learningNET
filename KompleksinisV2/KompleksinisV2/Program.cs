@@ -21,7 +21,7 @@ namespace KompleksinisV2
             var host = BuildWebHost(args);
 
             //////////////// sito nereiks prie gyvos DB
-            using (var scope = host.Services.CreateScope())
+          /*  using (var scope = host.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
                 try
@@ -34,7 +34,7 @@ namespace KompleksinisV2
                     var logger = services.GetRequiredService<ILogger<Program>>();
                     logger.LogError(ex, "An error occurred while seeding the database.");
                 }
-            }
+            }*/
             ////////////////////
             //BuildWebHost(args).Run();
             host.Run();

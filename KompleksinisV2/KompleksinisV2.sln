@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2008
+VisualStudioVersion = 15.0.27130.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KompleksinisV2", "KompleksinisV2\KompleksinisV2.csproj", "{325FA6DA-B6EA-4E36-B133-414C3F571D86}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kompleksinis.Tests", "Kompleksinis.Tests\Kompleksinis.Tests.csproj", "{A1188CAC-BF46-45F9-99A5-6350157E90D8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kompleksinis.Tests", "Kompleksinis.Tests\Kompleksinis.Tests.csproj", "{A1188CAC-BF46-45F9-99A5-6350157E90D8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kompleksinis.XUnitTests", "Kompleksinis.XUnitTests\Kompleksinis.XUnitTests.csproj", "{8C8BC113-0635-4E8D-B0A6-F1317F34317E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{A1188CAC-BF46-45F9-99A5-6350157E90D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A1188CAC-BF46-45F9-99A5-6350157E90D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A1188CAC-BF46-45F9-99A5-6350157E90D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8C8BC113-0635-4E8D-B0A6-F1317F34317E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C8BC113-0635-4E8D-B0A6-F1317F34317E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C8BC113-0635-4E8D-B0A6-F1317F34317E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C8BC113-0635-4E8D-B0A6-F1317F34317E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

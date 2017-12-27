@@ -1,4 +1,5 @@
-﻿using KompleksinisV2.Models;
+﻿using JetBrains.Annotations;
+using KompleksinisV2.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace KompleksinisV2.Data
@@ -7,6 +8,8 @@ namespace KompleksinisV2.Data
     {
         public TestContext(DbContextOptions<TestContext> options) :base(options)
         {}
+
+
         public DbSet<Department> Departments { get; set; }
         public DbSet<Employee> Employees { get; set; }
         public DbSet<Message> Messages { get; set; }
