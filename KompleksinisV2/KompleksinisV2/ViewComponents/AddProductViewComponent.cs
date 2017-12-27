@@ -33,9 +33,14 @@ namespace KompleksinisV2.ViewComponents
         {
             var query = from d in _context.Products
                         orderby d.Name
-                        select d;
+                        select new
+                        {
+                            d.ID,
+                            d.Name,
+                            groups = d.ProductGroup.Name
+                        };
 
-            ViewBag.ProductID = new SelectList(query.AsNoTracking(), "ID", "Name", selected);
+            ViewBag.ProductID = new SelectList(query.AsNoTracking(), "ID", "Name", selected, "groups");
         }
     }
 }
