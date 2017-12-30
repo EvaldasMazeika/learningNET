@@ -32,8 +32,10 @@ namespace KompleksinisV2.Controllers
             return View(await text.ToListAsync());
         }
 
-        public async Task<IActionResult> Orders(string sortOrder, string searchString)
+        public async Task<IActionResult> Orders(string sortOrder, string searchString, string SearchMe)
         {
+            PopulateStatesDropDown(SearchMe);
+
             ViewData["clientSortParam"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
             ViewData["stateSortParam"] = sortOrder == "Date" ? "date_desc" : "Date";
             ViewData["CurrentFilter"] = searchString;
@@ -47,6 +49,12 @@ namespace KompleksinisV2.Controllers
                 orders = orders.Where(s => s.Client.Name.Contains(searchString));
 
             }
+            if (!String.IsNullOrEmpty(SearchMe))
+            {
+                orders = orders.Where(s => s.State.ID == (Int32.Parse(SearchMe)));
+
+            }
+
 
             switch (sortOrder)
             {
@@ -65,6 +73,14 @@ namespace KompleksinisV2.Controllers
             }
 
             return View(await orders.AsNoTracking().ToListAsync());
+        }
+
+        private void PopulateStatesDropDown(object selected = null)
+        {
+            var query = from d in _context.States
+                        orderby d.Name
+                        select d;
+            ViewBag.States = new SelectList(query.AsNoTracking(), "ID", "Name", selected);
         }
 
         [HttpGet]
@@ -326,9 +342,31 @@ namespace KompleksinisV2.Controllers
             }
             catch (DbUpdateException)
             {
-                return RedirectToAction(nameof(client));
+                return RedirectToAction(nameof(Clients));
             }
         }
+
+        public async Task<IActionResult> DeleteOrder(int id)
+        {
+            var order = await _context.Orders.SingleOrDefaultAsync(m => m.ID == id);
+
+            if (order == null)
+            {
+                return RedirectToAction(nameof(Orders));
+            }
+            try
+            {
+                _context.Orders.Remove(order);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Orders));
+            }
+            catch (DbUpdateException)
+            {
+                return RedirectToAction(nameof(Orders));
+            }
+
+        }
+
 
 
         [HttpGet]
