@@ -27,8 +27,8 @@ namespace KompleksinisV2
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<TestContext>(options => options.UseSqlServer(Configuration.GetConnectionString("ConnectionString")));
-           // services.AddDbContext<TestContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+          //  services.AddDbContext<TestContext>(options => options.UseSqlServer(Configuration.GetConnectionString("ConnectionString")));
+            services.AddDbContext<TestContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             //TODO : ADD IDENTITY AUTHENTICATION
 

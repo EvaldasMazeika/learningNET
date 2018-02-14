@@ -2,10 +2,11 @@
   "name": "asp.net",
   "private": true,
   "dependencies": {
-    "bootstrap": "3.3.7",
+    "bootstrap": "4.0.0",
     "jquery": "2.2.0",
     "jquery-validation": "1.14.0",
     "jquery-validation-unobtrusive": "3.2.6",
-    "particles.js": "particles-js#2.0.0"
+    "particles.js": "particles-js#2.0.0",
+    "font-awesome": "5.0.6"
   }
 }
