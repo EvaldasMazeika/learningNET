@@ -19,8 +19,8 @@
             <td>
                 @if (User.Identities.First(u => u.IsAuthenticated && u.HasClaim(c => c.Type == "UserID")).FindFirst("UserID").Value != String.Join("",item.ID))
                 {
-                    <a class="btn btn-warning btn-xs" role="button" asp-action="EditEmployee" asp-route-id="@item.ID"><i class="glyphicon glyphicon-edit"></i></a>
-                    <button type="button" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#exampleModal" data-whatever="@item.ID"><i class="glyphicon glyphicon-trash"></i></button>
+                    <a class="btn btn-warning btn-xs" role="button" asp-action="EditEmployee" asp-route-id="@item.ID"><i class="fas fa-edit"></i></a>
+                    <button type="button" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#exampleModal" data-whatever="@item.ID"><i class="fas fa-ban"></i></button>
                 }
             </td>
         </tr>
