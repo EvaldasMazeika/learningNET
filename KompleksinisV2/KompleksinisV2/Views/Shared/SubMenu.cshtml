@@ -9,17 +9,17 @@
                 <h1>Pagrindinis</h1><hr style="margin-bottom:5px !important; margin-top:5px !important; " />
             </li>
             <li class="nav-item">
-                <a asp-area="" asp-controller="Dashboard" class="nav-link" asp-action="Index"><i class="glyphicon glyphicon-home"></i> Pagrindinis </a>
+                <a asp-area="" asp-controller="Dashboard" class="nav-link" asp-action="Index"><i class="fas fa-home"></i> Pagrindinis </a>
             </li>
             <li class="nav-item">
-                <a asp-area="" asp-controller="Dashboard" class="nav-link" asp-action="Employees"><i class="glyphicon glyphicon-user"></i> Darbuotojai</a>
+                <a asp-area="" asp-controller="Dashboard" class="nav-link" asp-action="Employees"><i class="fas fa-users"></i> Darbuotojai</a>
             </li>
             <li class="nav-item">
-                <a asp-area="" asp-controller="Dashboard" class="nav-link" asp-action="Message"><i class="glyphicon glyphicon-comment"></i> Pranešimas</a>
+                <a asp-area="" asp-controller="Dashboard" class="nav-link" asp-action="Message"><i class="fas fa-comment"></i> Pranešimas</a>
             </li>
 
             <li class="nav-item dropdown">
-                <a href="#" class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">@User.Identities.First(u => u.IsAuthenticated && u.HasClaim(c => c.Type == ClaimTypes.Name)).FindFirst(ClaimTypes.Name).Value </a>
+                <a href="#" class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-user-circle"></i> @User.Identities.First(u => u.IsAuthenticated && u.HasClaim(c => c.Type == ClaimTypes.Name)).FindFirst(ClaimTypes.Name).Value </a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                     <a class="dropdown-item" asp-area="" asp-controller="Account" asp-action="Edit"><i class="fa fa-fw fa-user"></i> Redaguoti paskyrą</a>
                     <a class="dropdown-item" asp-area="" asp-controller="Account" asp-action="ChangePassword"><i class="fa fa-fw fa-cog"></i> Pasikeisti slaptažodį</a>
@@ -36,19 +36,19 @@
                 <h1>Pardavimai</h1><hr style="margin-bottom:5px !important; margin-top:5px !important; " />
             </li>
             <li class="nav-item">
-                <a asp-area="" asp-controller="Sales" class="nav-link" asp-action="Index"><i class="glyphicon glyphicon-home"></i> Pagrindinis </a>
+                <a asp-area="" asp-controller="Sales" class="nav-link" asp-action="Index"><i class="fas fa-home"></i> Pagrindinis </a>
             </li>
             <li class="nav-item">
-                <a asp-area="" asp-controller="Sales" class="nav-link" asp-action="Orders"><i class="glyphicon glyphicon-briefcase"></i> Užsakymai</a>
+                <a asp-area="" asp-controller="Sales" class="nav-link" asp-action="Orders"><i class="fas fa-briefcase"></i> Užsakymai</a>
             </li>
             <li class="nav-item">
-                <a asp-area="" asp-controller="Sales" class="nav-link" asp-action="Clients"><i class="glyphicon glyphicon-user"></i> Klientai</a>
+                <a asp-area="" asp-controller="Sales" class="nav-link" asp-action="Clients"><i class="fas fa-users"></i> Klientai</a>
             </li>
             <li class="nav-item">
-                <a asp-area="" asp-controller="Sales" class="nav-link" asp-action="Reports"><i class="glyphicon glyphicon-comment"></i> Ataskaitos</a>
+                <a asp-area="" asp-controller="Sales" class="nav-link" asp-action="Reports"><i class="fas fa-book"></i> Ataskaitos</a>
             </li>
             <li class="nav-item dropdown">
-                <a href="#" class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">@User.Identities.First(u => u.IsAuthenticated && u.HasClaim(c => c.Type == ClaimTypes.Name)).FindFirst(ClaimTypes.Name).Value </a>
+                <a href="#" class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-user-circle"></i> @User.Identities.First(u => u.IsAuthenticated && u.HasClaim(c => c.Type == ClaimTypes.Name)).FindFirst(ClaimTypes.Name).Value </a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                     <a class="dropdown-item" asp-area="" asp-controller="Account" asp-action="Edit"><i class="fa fa-fw fa-user"></i> Redaguoti paskyrą</a>
                     <a class="dropdown-item" asp-area="" asp-controller="Account" asp-action="ChangePassword"><i class="fa fa-fw fa-cog"></i> Pasikeisti slaptažodį</a>

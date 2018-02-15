@@ -1,49 +1,47 @@
 ﻿@model KompleksinisV2.Models.Employee
 
-<h2>Redaguokite darbuotojo duomenis</h2>
+<h1 class="display-4">Redaguokite darbuotojo duomenis</h1>
 <hr />
-<form asp-action="NewEmployee">
+
+<form asp-action="EditEmployee">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <input type="hidden" asp-for="ID" />
     <input type="hidden" asp-for="Password" />
-    <div class="row">
-        <div class="col-xs-6">
-            <h4>Prisijungimo duomenys</h4>
-            <div class="form-group">
-                <label asp-for="Email" class="control-label"></label>
-                <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Išsaugoti" class="btn btn-default" />
-            </div>
-        </div>
-        <div class="col-xs-6">
-            <h4>Asmeniniai duomenys</h4>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Surname" class="control-label"></label>
-                <input asp-for="Surname" class="form-control" />
-                <span asp-validation-for="Surname" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="BirthDate" class="control-label"></label>
-                <input asp-for="BirthDate" class="form-control" />
-                <span asp-validation-for="BirthDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="MobileNumber" class="control-label"></label>
-                <input asp-for="MobileNumber" class="form-control" />
-                <span asp-validation-for="MobileNumber" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="DepartmentID" class="control-label"></label>
-                <select asp-for="DepartmentID" class="form-control" asp-items="ViewBag.DepartmentID"></select>
-            </div>
+    <div class="form-row">
+        <div class="form-group col-md-12">
+            <label asp-for="Email" class="control-label"></label>
+            <input asp-for="Email" class="form-control" />
+            <span asp-validation-for="Email" class="text-danger"></span>
         </div>
     </div>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label asp-for="Name" class="control-label"></label>
+            <input asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+        <div class="form-group col-md-6">
+            <label asp-for="Surname" class="control-label"></label>
+            <input asp-for="Surname" class="form-control" />
+            <span asp-validation-for="Surname" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-4">
+            <label asp-for="BirthDate" class="control-label"></label>
+            <input asp-for="BirthDate" class="form-control" />
+            <span asp-validation-for="BirthDate" class="text-danger"></span>
+        </div>
+        <div class="form-group col-md-4">
+            <label asp-for="MobileNumber" class="control-label"></label>
+            <input asp-for="MobileNumber" class="form-control" />
+            <span asp-validation-for="MobileNumber" class="text-danger"></span>
+        </div>
+        <div class="form-group col-md-4">
+            <label asp-for="DepartmentID" class="control-label"></label>
+            <select asp-for="DepartmentID" class="form-control" asp-items="ViewBag.DepartmentID"></select>
+        </div>
+    </div>
+    <input type="submit" value="Išsaugoti" class="btn btn-primary" />
 </form>
+

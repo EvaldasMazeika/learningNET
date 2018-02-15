@@ -3,54 +3,60 @@
 
 <a class="btn btn-info btn-lg" role="button" asp-action="NewEmployee">Pridėti naują Darbuotoją</a>
 <hr />
-<table class="table table-striped">
-    <tr>
-        <td><strong>Vardas Pavardė</strong></td>
-        <td><strong>El. paštas</strong></td>
-        <td><strong>Skyrius</strong></td>
-        <td><strong>Pasirinkimai</strong></td>
-    </tr>
-    @foreach (var item in Model)
-    {
+
+<table class="table table-dark">
+    <thead>
         <tr>
-            <td>@item.Name @item.Surname</td>
-            <td>@item.Email</td>
-            <td>@item.Department.Name</td>
-            <td>
-                @if (User.Identities.First(u => u.IsAuthenticated && u.HasClaim(c => c.Type == "UserID")).FindFirst("UserID").Value != String.Join("",item.ID))
-                {
-                    <a class="btn btn-warning btn-xs" role="button" asp-action="EditEmployee" asp-route-id="@item.ID"><i class="fas fa-edit"></i></a>
-                    <button type="button" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#exampleModal" data-whatever="@item.ID"><i class="fas fa-ban"></i></button>
-                }
-            </td>
+            <th scope="col">Vardas Pavardė</th>
+            <th scope="col">El. paštas</th>
+            <th scope="col">Skyrius</th>
+            <th scope="col">Pasirinkimai</th>
         </tr>
-    }
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Name @item.Surname</td>
+                <td>@item.Email</td>
+                <td>@item.Department.Name</td>
+                <td>
+                    @if (User.Identities.First(u => u.IsAuthenticated && u.HasClaim(c => c.Type == "UserID")).FindFirst("UserID").Value != String.Join("", item.ID))
+                    {
+                        <a class="btn btn-warning btn-xs" role="button" asp-action="EditEmployee" asp-route-id="@item.ID"><i class="fas fa-edit"></i></a>
+                        <button type="button" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#Modal" data-whatever="@item.ID"><i class="fas fa-ban"></i></button>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
 </table>
 
-
-<!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+<div class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">Pašalinimas</h4>
+                <h5 class="modal-title" id="ModalLabel">Pašalinimas</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
             <div class="modal-body">
                 <p>Ar tikrai norite pašalinti darbuotoją iš sistemos?</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Ne</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Ne</button>
                 <button id="what" type="button" class="btn btn-primary">Taip</button>
             </div>
         </div>
     </div>
 </div>
 
+
 <script type="text/javascript">
     $(document).ready(function () {
 
-        $('#exampleModal').on('show.bs.modal', function (event) {
+        $('#Modal').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget)
             var recipient = button.data('whatever')
 
@@ -62,7 +68,7 @@
                     type: "POST",
                     url: "/Dashboard/DeleteEmployee/" + recipient,
                     data: {
-                        id: recipient, 
+                        id: recipient,
                     },
                     success: function (result) {
                         location.reload();
@@ -73,5 +79,5 @@
             });
         })
     });
-   
+
 </script>
