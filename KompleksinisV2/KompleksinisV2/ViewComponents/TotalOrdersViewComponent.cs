@@ -12,9 +12,9 @@ namespace KompleksinisV2.ViewComponents
     [ViewComponent(Name = "TotalOrders")]
     public class TotalOrdersViewComponent : ViewComponent
     {
-        private TestContext _context;
+        private Data.AppDbContext _context;
 
-        public TotalOrdersViewComponent(TestContext context)
+        public TotalOrdersViewComponent(Data.AppDbContext context)
         {
             _context = context;
         }

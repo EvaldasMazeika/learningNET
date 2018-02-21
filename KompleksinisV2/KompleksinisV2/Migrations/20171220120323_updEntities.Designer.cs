@@ -10,7 +10,7 @@ using System;
 
 namespace KompleksinisV2.Migrations
 {
-    [DbContext(typeof(TestContext))]
+    [DbContext(typeof(Data.AppDbContext))]
     [Migration("20171220120323_updEntities")]
     partial class updEntities
     {

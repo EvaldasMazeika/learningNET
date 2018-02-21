@@ -10,7 +10,7 @@ using System;
 
 namespace KompleksinisV2.Migrations
 {
-    [DbContext(typeof(TestContext))]
+    [DbContext(typeof(Data.AppDbContext))]
     [Migration("20171217190552_MoreFixes")]
     partial class MoreFixes
     {

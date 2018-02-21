@@ -15,9 +15,9 @@ namespace KompleksinisV2.Controllers
     [Authorize]
     public class SalesController : Controller
     {
-        private TestContext _context;
+        private Data.AppDbContext _context;
 
-        public SalesController(TestContext context)
+        public SalesController(Data.AppDbContext context)
         {
             _context = context;
         }

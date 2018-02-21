@@ -13,9 +13,9 @@ namespace KompleksinisV2.ViewComponents
     [ViewComponent(Name = "AddProduct")]
     public class AddProductViewComponent : ViewComponent
     {
-        private TestContext _context;
+        private Data.AppDbContext _context;
 
-        public AddProductViewComponent(TestContext context)
+        public AddProductViewComponent(Data.AppDbContext context)
         {
             _context = context;
         }

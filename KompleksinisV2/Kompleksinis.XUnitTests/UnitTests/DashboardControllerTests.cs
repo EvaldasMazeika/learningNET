@@ -15,7 +15,7 @@ namespace Kompleksinis.XUnitTests
     public class DashboardControllerTests
     {
         private DashboardController _controller;
-        private TestContext _context;
+        private KompleksinisV2.Data.AppDbContext _context;
         [Fact]
         public async Task Test1()
         {

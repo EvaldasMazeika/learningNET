@@ -8,7 +8,7 @@ namespace KompleksinisV2.Data
 {
     public static class DbInitializer
     {
-        public static void Initialize(TestContext context)
+        public static void Initialize(AppDbContext context)
         { // seeding local db
             context.Database.EnsureCreated();
 

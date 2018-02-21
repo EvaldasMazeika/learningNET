@@ -10,7 +10,7 @@ using System;
 
 namespace KompleksinisV2.Migrations
 {
-    [DbContext(typeof(TestContext))]
+    [DbContext(typeof(Data.AppDbContext))]
     [Migration("20171210190255_updatedMessageT")]
     partial class updatedMessageT
     {

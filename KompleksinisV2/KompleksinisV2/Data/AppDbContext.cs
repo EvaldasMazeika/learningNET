@@ -1,12 +1,14 @@
-﻿using JetBrains.Annotations;
+﻿using System;
 using KompleksinisV2.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace KompleksinisV2.Data
 {
-    public class TestContext : DbContext
+    public class AppDbContext : IdentityDbContext<AppIdentityUser, AppIdentityRole, Guid>
     {
-        public TestContext(DbContextOptions<TestContext> options) :base(options)
+        public AppDbContext(DbContextOptions<AppDbContext> options) :base(options)
         {}
 
 
@@ -22,7 +24,7 @@ namespace KompleksinisV2.Data
         public DbSet<OrderItem> OrderItems { get; set; }
 
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+       /* protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Department>().ToTable("Department");
             modelBuilder.Entity<Employee>().ToTable("Employee");
@@ -34,7 +36,7 @@ namespace KompleksinisV2.Data
             modelBuilder.Entity<State>().ToTable("State");
             modelBuilder.Entity<Order>().ToTable("Order");
             modelBuilder.Entity<OrderItem>().ToTable("OrderItem");
-        }
+        }*/
 
     }
 }

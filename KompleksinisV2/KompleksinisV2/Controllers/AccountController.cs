@@ -15,9 +15,9 @@ namespace KompleksinisV2.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly TestContext _context;
+        private readonly Data.AppDbContext _context;
 
-        public AccountController(TestContext context)
+        public AccountController(Data.AppDbContext context)
         {
             _context = context;
         }

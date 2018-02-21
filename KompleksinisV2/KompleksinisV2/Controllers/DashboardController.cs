@@ -16,9 +16,9 @@ namespace KompleksinisV2.Controllers
     public class DashboardController : Controller
     {
         // private readonly KompleksinisDBContext _context;
-        private readonly TestContext _context;
+        private readonly Data.AppDbContext _context;
 
-        public DashboardController(TestContext context)
+        public DashboardController(Data.AppDbContext context)
         {
             _context = context;
         }

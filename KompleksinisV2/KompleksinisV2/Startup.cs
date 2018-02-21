@@ -7,11 +7,11 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using KompleksinisV2.Models;
-
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using KompleksinisV2.Data;
 using Microsoft.AspNetCore.Identity;
+using KompleksinisV2.Data;
+using Microsoft.AspNetCore.Http;
 
 namespace KompleksinisV2
 {
@@ -28,17 +28,38 @@ namespace KompleksinisV2
         public void ConfigureServices(IServiceCollection services)
         {
           //  services.AddDbContext<TestContext>(options => options.UseSqlServer(Configuration.GetConnectionString("ConnectionString")));
-            services.AddDbContext<TestContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<AppDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
-            //TODO : ADD IDENTITY AUTHENTICATION
+          
+            services.AddIdentity<AppIdentityUser, AppIdentityRole>()
+                .AddEntityFrameworkStores<AppDbContext>()
+                .AddDefaultTokenProviders();
 
-            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+            services.Configure<IdentityOptions>(opt => {
+                opt.Password.RequireDigit = true;
+            });
+
+            services.ConfigureApplicationCookie(options => {
+                options.LoginPath = "/Account/Login";
+                options.LogoutPath = "/Account/Logout";
+                options.AccessDeniedPath = "/Account/AccessDenied";
+                options.Cookie = new CookieBuilder
+                {
+                    HttpOnly = true,
+                    Name = ".Fiver.Security.Cookie",
+                    Path = "/",
+                    SameSite = SameSiteMode.Lax,
+                    SecurePolicy = CookieSecurePolicy.SameAsRequest
+                };
+            });
+
+            /*services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme,
                 options => 
                 {
                     options.LoginPath = new Microsoft.AspNetCore.Http.PathString("/Account/Login/");
                     options.AccessDeniedPath = new Microsoft.AspNetCore.Http.PathString("/Account/Forbidden/");
-                });
+                });*/
 
             services.AddMvc();
            
