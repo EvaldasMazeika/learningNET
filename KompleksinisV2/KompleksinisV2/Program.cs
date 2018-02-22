@@ -29,9 +29,9 @@ namespace KompleksinisV2
                     var context = services.GetRequiredService<Data.AppDbContext>();
                     DbInitializer.Initialize(context);
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
-
+                    throw new Exception("what");
                 }
             }
             ////////////////////

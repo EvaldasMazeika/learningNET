@@ -1,22 +1,44 @@
-﻿@model KompleksinisV2.Models.Employee
+﻿@model KompleksinisV2.Models.ViewModels.LoginViewModel
 @{
     Layout = "~/Views/Shared/_Custom.cshtml";
 }
-<div class="container">
+
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        <form asp-action="Login" asp-route-returnurl="@ViewData["ReturnUrl"]">
+            <div class="form-group">
+                <label asp-for="Username">Slapyvardis</label>
+                <input asp-for="Username" type="text" class="form-control" placeholder="">
+                <span asp-validation-for="Username" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Password">Slaptažodis</label>
+                <input asp-for="Password" type="password" class="form-control" placeholder="">
+            </div>
+            <div class="form-check">
+                <input asp-for="RememberMe" type="checkbox" class="form-check-input">
+                <label asp-for="RememberMe" class="form-check-label" >Prisiminti mane?</label>
+            </div>
+            <button type="submit" class="btn btn-primary">Prisijungti</button>
+        </form>
+    </div>
+</div>
+
+<!--
+    <div class="container">
     <div id="login-box">
         <div class="logo">
             <h1 class="logo-caption">IrKo</h1>
         </div>
         <div class="controls">
             <form asp-action="Login">
-                <input  asp-for="Email" class="form-control nein" type="text" placeholder="El. paštas" required />
+                <input  asp-for="Username" class="form-control nein" type="text" placeholder="El. paštas" required />
                 <input  asp-for="Password" class="form-control nein" type="password" placeholder="Slaptažodis" required />
                 <input type="submit" value="Prisijungti" class="btn btn-primary btn-lg btn-block" />
             </form>
-            
+
         </div>
     </div>
 </div>
 <div id="particles-js"></div>
-
-
+-->

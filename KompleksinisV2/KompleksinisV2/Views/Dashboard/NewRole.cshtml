@@ -1,0 +1,15 @@
+﻿@model KompleksinisV2.Models.ViewModels.ApplicationRoleViewModel
+
+<form asp-action="NewRole">
+    <div class="form-group">
+        <label asp-for="RoleName">Pavadinimas</label>
+        <input asp-for="RoleName" type="text" class="form-control" placeholder="">
+        <span asp-validation-for="RoleName" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Description">Aprašymas</label>
+        <input asp-for="Description" type="text" class="form-control" placeholder="">
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Užregistruoti</button>
+</form>

@@ -3,14 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
 
-namespace KompleksinisV2.Models
+namespace KompleksinisV2.Models.ViewModels
 {
-    public class AppIdentityRole : IdentityRole<Guid>
+    public class RoleListViewModel
     {
+        public Guid Id { get; set; }
+        public string RoleName { get; set; }
         public string Description { get; set; }
-        public DateTime DateCreated { get; set; }
-
     }
 }

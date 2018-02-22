@@ -11,9 +11,10 @@ using System;
 namespace KompleksinisV2.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class TestContextModelSnapshot : ModelSnapshot
+    [Migration("20180222090453_ModifiedRoles")]
+    partial class ModifiedRoles
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -60,6 +61,8 @@ namespace KompleksinisV2.Migrations
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken();
 
+                    b.Property<int>("DepartmentID");
+
                     b.Property<string>("Email")
                         .HasMaxLength(256);
 
@@ -93,6 +96,8 @@ namespace KompleksinisV2.Migrations
                         .HasMaxLength(256);
 
                     b.HasKey("Id");
+
+                    b.HasIndex("DepartmentID");
 
                     b.HasIndex("NormalizedEmail")
                         .HasName("EmailIndex");
@@ -413,6 +418,14 @@ namespace KompleksinisV2.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
+                });
+
+            modelBuilder.Entity("KompleksinisV2.Models.AppIdentityUser", b =>
+                {
+                    b.HasOne("KompleksinisV2.Models.Department", "Department")
+                        .WithMany()
+                        .HasForeignKey("DepartmentID")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("KompleksinisV2.Models.Comments", b =>

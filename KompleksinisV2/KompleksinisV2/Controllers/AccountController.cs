@@ -8,50 +8,60 @@ using KompleksinisV2.Models;
 using KompleksinisV2.Models.ViewModels;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace KompleksinisV2.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly Data.AppDbContext _context;
+        private readonly AppDbContext _context;
+        private readonly SignInManager<AppIdentityUser> _signInManager;
+        private readonly UserManager<AppIdentityUser> _userManager;
+        private readonly RoleManager<AppIdentityRole> _roleManager;
 
-        public AccountController(Data.AppDbContext context)
+        public AccountController(AppDbContext context,
+            SignInManager<AppIdentityUser> signInManager,
+            UserManager<AppIdentityUser> userManager,
+            RoleManager<AppIdentityRole> roleManager)
         {
             _context = context;
+            _signInManager = signInManager;
+            _userManager = userManager;
+            _roleManager = roleManager;
         }
 
         [HttpGet]
-        public IActionResult Login()
+        public IActionResult Login(string returnUrl = null)
         {
+            ViewData["ReturnUrl"] = returnUrl;
+
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login(Employee employee)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Login(LoginViewModel model, string returnUrl = null)
         {
+            ViewData["ReturnUrl"] = returnUrl;
 
-            if (LoginUser(employee.Email, employee.Password))
+            if (!ModelState.IsValid)
             {
-                employee.Name = _context.Employees.Single(x => x.Email == employee.Email).Name;
-                employee.ID = _context.Employees.Single(x => x.Email == employee.Email).ID;
-              //  employee.Name =  _context.Employees.Where(x => x.Email == employee.Email).Select(x => x.Name).ToString();
-
-                var claims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.Name, employee.Name), 
-                    new Claim("UserID",String.Join("",employee.ID))
-                };
-
-                var userIdentity = new ClaimsIdentity(claims, "Login");
-
-                ClaimsPrincipal principal = new ClaimsPrincipal(userIdentity);
-                await HttpContext.SignInAsync(principal);
-                return Redirect("/");
+                return View(model);
             }
 
-            return View();
+            var result = await _signInManager.PasswordSignInAsync(model.Username, model.Password,model.RememberMe, lockoutOnFailure: false);
+
+            if (result.Succeeded)
+            {
+                return RedirectToLocal(returnUrl);
+            }
+
+            ModelState.AddModelError(string.Empty, "Login Failed");
+            return View(model);
+
         }
 
         private bool LoginUser(string email, string password)
@@ -70,9 +80,22 @@ namespace KompleksinisV2.Controllers
 
         public async Task<IActionResult> Logout()
         {
-            await HttpContext.SignOutAsync();
-            return RedirectToAction("Login","Account");
+            await _signInManager.SignOutAsync();
+            return RedirectToAction("Login", "Account");
         }
+
+        private IActionResult RedirectToLocal(string returnUrl)
+        {
+            if (Url.IsLocalUrl(returnUrl))
+            {
+                return Redirect(returnUrl);
+            }
+            else
+            {
+                return RedirectToAction("Index", "Dashboard");
+            }
+        }
+
 
         [HttpGet]
         public IActionResult Edit()
@@ -138,43 +161,7 @@ namespace KompleksinisV2.Controllers
             return View(changePasswordViewModel);
         }
 
-
-        /* public async Task<IActionResult> Login(string returnUrl = null)
-         {
-             const string Issuer = "https://consoto.com";
-             var claims = new List<Claim>();
-             claims.Add(new Claim(ClaimTypes.Name, "barry", ClaimValueTypes.String, Issuer));
-             claims.Add(new Claim(ClaimTypes.Role, "Administrator", ClaimValueTypes.String, Issuer));
-             var userIdentity = new ClaimsIdentity("SuperSecureLogin");
-             userIdentity.AddClaims(claims);
-             var userPrincipal = new ClaimsPrincipal(userIdentity);
-
-             await HttpContext.SignInAsync(
-                 CookieAuthenticationDefaults.AuthenticationScheme,
-                 userPrincipal,
-                 new AuthenticationProperties
-                 {
-                     ExpiresUtc = DateTime.UtcNow.AddMinutes(20),
-                     IsPersistent = false,
-                     AllowRefresh = false
-                 });
-
-             return RedirectToLocal(returnUrl);
-         }*/
-
-        private IActionResult RedirectToLocal(string returnUrl)
-        {
-            if (Url.IsLocalUrl(returnUrl))
-            {
-                return Redirect(returnUrl);
-            }
-            else
-            {
-                return RedirectToAction("Index", "Dashboard");
-            }
-        }
-
-        public IActionResult Forbidden()
+        public IActionResult AccessDenied()
         {
             return View();
         }

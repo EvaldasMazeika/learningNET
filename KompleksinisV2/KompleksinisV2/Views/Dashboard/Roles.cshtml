@@ -1,0 +1,24 @@
+﻿@model IEnumerable<KompleksinisV2.Models.ViewModels.RoleListViewModel>
+
+<a class="btn btn-info btn-lg" role="button" asp-action="NewRole">Pridėti skyrių</a>
+<hr />
+<table class="table table-dark">
+    <thead>
+        <tr>
+            <th scope="col">Pavadinimas</th>
+            <th scope="col">Aprašymas</th>
+            <th scope="col">Veiksmai</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.RoleName</td>
+                <td>@item.Description</td>
+                <td>X</td>
+            </tr>
+        }
+    </tbody>
+</table>
+

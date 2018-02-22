@@ -1,5 +1,7 @@
 ﻿@using System.Security.Claims;
-@model IEnumerable<Employee>
+@model IEnumerable<KompleksinisV2.Models.ViewModels.EmployeeListViewModel>
+
+@inject Microsoft.AspNetCore.Identity.UserManager<AppIdentityUser> UserManager
 
 <a class="btn btn-info btn-lg" role="button" asp-action="NewEmployee">Pridėti naują Darbuotoją</a>
 <hr />
@@ -17,15 +19,18 @@
         @foreach (var item in Model)
         {
             <tr>
-                <td>@item.Name @item.Surname</td>
+                <td>@item.FullName</td>
                 <td>@item.Email</td>
-                <td>@item.Department.Name</td>
+                <td>@item.Role</td>
                 <td>
-                    @if (User.Identities.First(u => u.IsAuthenticated && u.HasClaim(c => c.Type == "UserID")).FindFirst("UserID").Value != String.Join("", item.ID))
+                    @if (UserManager.GetUserId(User) != item.Id.ToString())
                     {
-                        <a class="btn btn-warning btn-xs" role="button" asp-action="EditEmployee" asp-route-id="@item.ID"><i class="fas fa-edit"></i></a>
-                        <button type="button" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#Modal" data-whatever="@item.ID"><i class="fas fa-ban"></i></button>
+
+
+                        <a class="btn btn-warning btn-xs" role="button" asp-action="EditEmployee" asp-route-id="@item.Id"><i class="fas fa-edit"></i></a>
+                        <button type="button" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#exampleModal" data-whatever="@item.Id"><i class="fas fa-ban"></i></button>
                     }
+
                 </td>
             </tr>
         }

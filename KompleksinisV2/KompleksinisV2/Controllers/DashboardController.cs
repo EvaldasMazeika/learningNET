@@ -5,7 +5,9 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using KompleksinisV2.Data;
 using KompleksinisV2.Models;
+using KompleksinisV2.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -16,11 +18,16 @@ namespace KompleksinisV2.Controllers
     public class DashboardController : Controller
     {
         // private readonly KompleksinisDBContext _context;
-        private readonly Data.AppDbContext _context;
+        private readonly AppDbContext _context;
+        private readonly RoleManager<AppIdentityRole> _roleManager;
+        private readonly UserManager<AppIdentityUser> _userManager;
 
-        public DashboardController(Data.AppDbContext context)
+        public DashboardController(AppDbContext context, RoleManager<AppIdentityRole> roleManager,
+            UserManager<AppIdentityUser> userManager)
         {
             _context = context;
+            _roleManager = roleManager;
+            _userManager = userManager;
         }
 
         public async Task<IActionResult> Index()
@@ -35,8 +42,16 @@ namespace KompleksinisV2.Controllers
 
         public IActionResult Employees()
         {
-            var _list = _context.Employees.Include(x => x.Department).AsNoTracking();
-            return View(_list.ToList());
+            var model = new List<EmployeeListViewModel>();
+            model = _userManager.Users.Select( u => new EmployeeListViewModel
+            {
+                Id = u.Id,
+                FullName = u.FullName,
+                Email = u.Email,
+                Role = "what?"  // TODO: ADD NORMBAL ROLE STRING
+            }).ToList();
+
+            return View(model);
         }
 
         [HttpGet]
@@ -47,9 +62,40 @@ namespace KompleksinisV2.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> NewEmployee(Employee employee)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> NewEmployee(NewEmployeeViewModel employee)
         {
-            try
+
+            if (ModelState.IsValid)
+            {
+                var user = new AppIdentityUser
+                {
+                    UserName = employee.UserName,
+                    Name = employee.Name,
+                    Surname = employee.Surname,
+                    Email = employee.Email,
+                    BirthDate = employee.BirthDate,
+                    PhoneNumber = employee.MobileNumber
+                };
+
+                IdentityResult result = await _userManager.CreateAsync(user, employee.Password);
+                if (result.Succeeded)
+                {
+                    AppIdentityRole appIdentityRole = await _roleManager.FindByIdAsync(employee.DepartmentId.ToString());
+                    if (appIdentityRole != null)
+                    {
+                        IdentityResult roleResult = await _userManager.AddToRoleAsync(user, appIdentityRole.Name);
+                        if (roleResult.Succeeded)
+                        {
+                            return RedirectToAction("Index");
+                        }
+                    }
+                }
+
+            }
+            PopulateDepartmentDropDown(employee.DepartmentId);
+            return View(employee);
+          /*  try
             {
                 if (ModelState.IsValid)
                 {
@@ -62,8 +108,8 @@ namespace KompleksinisV2.Controllers
             {throw;}
 
             
-            PopulateDepartmentDropDown(employee.DepartmentID);
-            return View(employee);
+            PopulateDepartmentDropDown(employee.DepartmentId);
+            return View(employee);*/
         }
 
         [HttpGet]
@@ -140,10 +186,10 @@ namespace KompleksinisV2.Controllers
 
         private void PopulateDepartmentDropDown(object selected = null)
         {
-            var query = from d in _context.Departments
+            var query = from d in _roleManager.Roles
                         orderby d.Name
                         select d;
-            ViewBag.DepartmentID = new SelectList(query.AsNoTracking(), "ID", "Name",selected);
+            ViewBag.DepartmentId = new SelectList(query.AsNoTracking(), "Id", "Name",selected);
         }
 
         [HttpGet]
@@ -213,5 +259,52 @@ namespace KompleksinisV2.Controllers
 
             return View(message);
         }
+
+        [Authorize(Roles ="Administrator")]
+        public IActionResult Roles()
+        {
+            List<RoleListViewModel> model = new List<RoleListViewModel>();
+            model = _roleManager.Roles.Select(r => new RoleListViewModel
+            {
+                RoleName = r.Name,
+                Id = r.Id,
+                Description = r.Description
+            }).ToList();
+            return View(model);
+        }
+
+        [HttpGet]
+        public IActionResult NewRole()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> NewRole(RoleListViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                AppIdentityRole applicationRole = new AppIdentityRole { DateCreated = DateTime.Now };
+
+                applicationRole.Name = model.RoleName;
+                applicationRole.Description = model.Description;
+
+                IdentityResult roleRuslt = await _roleManager.CreateAsync(applicationRole);
+
+                if (roleRuslt.Succeeded)
+                {
+                    return RedirectToAction("Roles");
+                }
+
+            }
+            return View(model);
+        }
+
+
+        public IActionResult Error()
+        {
+            return View();
+        }
+
     }
 }

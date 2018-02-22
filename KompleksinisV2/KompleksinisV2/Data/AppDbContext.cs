@@ -3,6 +3,7 @@ using KompleksinisV2.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using KompleksinisV2.Models.ViewModels;
 
 namespace KompleksinisV2.Data
 {

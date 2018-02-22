@@ -36,17 +36,21 @@ namespace KompleksinisV2
                 .AddDefaultTokenProviders();
 
             services.Configure<IdentityOptions>(opt => {
-                opt.Password.RequireDigit = true;
+                opt.Password.RequireDigit = false;
+                opt.Password.RequireNonAlphanumeric = false;
+                opt.Password.RequireUppercase = false;
             });
 
             services.ConfigureApplicationCookie(options => {
                 options.LoginPath = "/Account/Login";
                 options.LogoutPath = "/Account/Logout";
                 options.AccessDeniedPath = "/Account/AccessDenied";
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+                options.ReturnUrlParameter = CookieAuthenticationDefaults.ReturnUrlParameter;
                 options.Cookie = new CookieBuilder
                 {
                     HttpOnly = true,
-                    Name = ".Fiver.Security.Cookie",
+                    Name = ".App.Security.Cookie",
                     Path = "/",
                     SameSite = SameSiteMode.Lax,
                     SecurePolicy = CookieSecurePolicy.SameAsRequest

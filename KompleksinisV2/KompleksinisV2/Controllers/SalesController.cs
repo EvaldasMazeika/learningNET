@@ -12,12 +12,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace KompleksinisV2.Controllers
 {
-    [Authorize]
+    [Authorize(Roles ="Sales")]
     public class SalesController : Controller
     {
-        private Data.AppDbContext _context;
+        private AppDbContext _context;
 
-        public SalesController(Data.AppDbContext context)
+        public SalesController(AppDbContext context)
         {
             _context = context;
         }

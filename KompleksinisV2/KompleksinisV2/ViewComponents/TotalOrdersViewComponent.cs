@@ -12,14 +12,14 @@ namespace KompleksinisV2.ViewComponents
     [ViewComponent(Name = "TotalOrders")]
     public class TotalOrdersViewComponent : ViewComponent
     {
-        private Data.AppDbContext _context;
+        private AppDbContext _context;
 
-        public TotalOrdersViewComponent(Data.AppDbContext context)
+        public TotalOrdersViewComponent(AppDbContext context)
         {
             _context = context;
         }
 
-        public async Task<IViewComponentResult> InvokeAsync()
+        public IViewComponentResult Invoke()
         {
             PopulateEmployeeDropDown();
             return View();
