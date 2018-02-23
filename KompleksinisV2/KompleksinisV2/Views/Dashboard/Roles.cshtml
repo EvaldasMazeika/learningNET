@@ -16,9 +16,64 @@
             <tr>
                 <td>@item.RoleName</td>
                 <td>@item.Description</td>
-                <td>X</td>
+                <td>
+                    @if (item.RoleName != "Administrator")
+                    {
+                        <a class="btn btn-warning btn-xs" role="button" asp-action="EditRole" asp-route-id="@item.Id"><i class="fas fa-edit"></i> Redaguoti</a>
+                        <button type="button" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#DeleteModal" data-whatever="@item.Id"><i class="fas fa-ban"></i> Ištrinti</button>
+                    }
+                </td>
             </tr>
         }
     </tbody>
 </table>
 
+
+<div class="modal fade" id="DeleteModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ModalLabel">Pašalinimas</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Ar tikrai norite pašalinti skyrių iš sistemos?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Ne</button>
+                <button id="what" type="button" class="btn btn-primary">Taip</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        $('#DeleteModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget)
+            var recipient = button.data('whatever')
+
+            var modal = $(this)
+
+            $("#what").click(function (e) {
+                e.preventDefault();
+                $.ajax({
+                    type: "POST",
+                    url: "/Dashboard/DeleteRole/" + recipient,
+                    data: {
+                        id: recipient,
+                    },
+                    success: function (result) {
+                        location.reload();
+                    },
+                    error: function (result) {
+                    }
+                });
+            });
+        })
+    });
+
+</script>

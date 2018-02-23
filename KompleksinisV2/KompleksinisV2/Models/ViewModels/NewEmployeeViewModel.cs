@@ -22,6 +22,8 @@ namespace KompleksinisV2.Models.ViewModels
         [DataType(DataType.PhoneNumber)]
         [RegularExpression("^([+])([0-9]{11})$", ErrorMessage = "Netinkamas formatas")]
         public string MobileNumber { get; set; }
+
+        [Display(Name ="Teisės")]
         public Guid DepartmentId { get; set; }
 
     }

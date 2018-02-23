@@ -11,14 +11,13 @@ using System;
 namespace KompleksinisV2.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20180222094414_ModifiedIdentUser")]
-    partial class ModifiedIdentUser
+    partial class AppDbContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.0.0-rtm-26452")
+                .HasAnnotation("ProductVersion", "2.0.1-rtm-125")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("KompleksinisV2.Models.AppIdentityRole", b =>
@@ -167,40 +166,6 @@ namespace KompleksinisV2.Migrations
                     b.ToTable("Departments");
                 });
 
-            modelBuilder.Entity("KompleksinisV2.Models.Employee", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<DateTime>("BirthDate");
-
-                    b.Property<int>("DepartmentID");
-
-                    b.Property<string>("Email")
-                        .IsRequired();
-
-                    b.Property<string>("MobileNumber")
-                        .IsRequired();
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(20);
-
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasMaxLength(20);
-
-                    b.Property<string>("Surname")
-                        .IsRequired()
-                        .HasMaxLength(20);
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("DepartmentID");
-
-                    b.ToTable("Employees");
-                });
-
             modelBuilder.Entity("KompleksinisV2.Models.Message", b =>
                 {
                     b.Property<int>("ID")
@@ -208,7 +173,7 @@ namespace KompleksinisV2.Migrations
 
                     b.Property<int>("DepartmentID");
 
-                    b.Property<int?>("EmployeeID");
+                    b.Property<Guid>("EmployeeID");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -237,7 +202,7 @@ namespace KompleksinisV2.Migrations
 
                     b.Property<DateTime>("CreateDate");
 
-                    b.Property<int>("EmployeeID");
+                    b.Property<Guid>("EmployeeID");
 
                     b.Property<DateTime?>("FinishDate");
 
@@ -424,14 +389,6 @@ namespace KompleksinisV2.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("KompleksinisV2.Models.Employee", b =>
-                {
-                    b.HasOne("KompleksinisV2.Models.Department", "Department")
-                        .WithMany()
-                        .HasForeignKey("DepartmentID")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
             modelBuilder.Entity("KompleksinisV2.Models.Message", b =>
                 {
                     b.HasOne("KompleksinisV2.Models.Department", "Department")
@@ -439,9 +396,10 @@ namespace KompleksinisV2.Migrations
                         .HasForeignKey("DepartmentID")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("KompleksinisV2.Models.Employee", "Employee")
+                    b.HasOne("KompleksinisV2.Models.AppIdentityUser", "Employee")
                         .WithMany()
-                        .HasForeignKey("EmployeeID");
+                        .HasForeignKey("EmployeeID")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("KompleksinisV2.Models.Order", b =>
@@ -451,7 +409,7 @@ namespace KompleksinisV2.Migrations
                         .HasForeignKey("ClientID")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("KompleksinisV2.Models.Employee", "Employee")
+                    b.HasOne("KompleksinisV2.Models.AppIdentityUser", "Employee")
                         .WithMany()
                         .HasForeignKey("EmployeeID")
                         .OnDelete(DeleteBehavior.Cascade);

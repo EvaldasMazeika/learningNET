@@ -24,7 +24,7 @@ namespace KompleksinisV2.Models.ViewModels
         [Required(ErrorMessage = "Šis laukas yra privalomas")]
         public DateTime EndDate { get; set; }
 
-        public Employee Employee { get; set; }
+        public AppIdentityUser Employee { get; set; }
 
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)

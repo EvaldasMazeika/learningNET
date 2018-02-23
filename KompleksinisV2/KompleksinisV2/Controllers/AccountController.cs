@@ -64,20 +64,6 @@ namespace KompleksinisV2.Controllers
 
         }
 
-        private bool LoginUser(string email, string password)
-        {
-            var lol = _context.Employees.Where(x => x.Email == email && x.Password == password);
-            
-            if (lol.Any())
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
@@ -98,38 +84,38 @@ namespace KompleksinisV2.Controllers
 
 
         [HttpGet]
-        public IActionResult Edit()
+        public async Task<IActionResult> Edit()
         {
-            int _id = Int32.Parse(User.Identities.First(u => u.IsAuthenticated && u.HasClaim(c => c.Type == "UserID")).FindFirst("UserID").Value);
-            var empToUpdate = _context.Employees.SingleOrDefault(x => x.ID == _id);
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            Guid _id = user.Id;
 
-            EditMySelfViewModel _temp = new EditMySelfViewModel
+            EditMySelfViewModel temp = new EditMySelfViewModel
             {
-                Email = empToUpdate.Email,
-                Surname = empToUpdate.Surname,
-                MobileNumber = empToUpdate.MobileNumber
+                Email = user.Email,
+                Surname = user.Surname,
+                MobileNumber = user.PhoneNumber
             };
-
-            return View(_temp);
+            return View(temp);
         }
 
         [HttpPost]
         public async Task<IActionResult> Edit(EditMySelfViewModel emp)
         {
-            int _id = Int32.Parse(User.Identities.First(u => u.IsAuthenticated && u.HasClaim(c => c.Type == "UserID")).FindFirst("UserID").Value);
-            var empToUpdate = await _context.Employees.SingleOrDefaultAsync(x => x.ID == _id);
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            Guid _id = user.Id;
 
             if (ModelState.IsValid)
             {
-                empToUpdate.Surname = emp.Surname;
-                empToUpdate.Email = emp.Email;
-                empToUpdate.MobileNumber = emp.MobileNumber;
+                user.Surname = emp.Surname;
+                user.Email = emp.Email;
+                user.PhoneNumber = emp.MobileNumber;
 
-                _context.Update(empToUpdate);
-                await _context.SaveChangesAsync();
-                return RedirectToAction("Index", "Dashboard");
+                IdentityResult result = await _userManager.UpdateAsync(user);
+                if(result.Succeeded)
+                {
+                    return RedirectToAction("Index", "Dashboard");
+                }  
             }
-
             return View(emp);
         }
 
@@ -147,15 +133,14 @@ namespace KompleksinisV2.Controllers
             {
                 if (changePasswordViewModel.NewPassword == changePasswordViewModel.RepeatPassword)
                 {
-                    int _id = Int32.Parse(User.Identities.First(u => u.IsAuthenticated && u.HasClaim(c => c.Type == "UserID")).FindFirst("UserID").Value);
-                    var empToUpdate = _context.Employees.SingleOrDefault(x => x.ID == _id);
+                    var user = await _userManager.GetUserAsync(HttpContext.User);
+                    Guid _id = user.Id;
 
-                    empToUpdate.Password = changePasswordViewModel.NewPassword;
-
-                    _context.Update(empToUpdate);
-                    await _context.SaveChangesAsync();
-                    return RedirectToAction("Index", "Dashboard");
-
+                    IdentityResult result = await _userManager.ChangePasswordAsync(user, changePasswordViewModel.CurrentPassword, changePasswordViewModel.NewPassword);
+                    if(result.Succeeded)
+                    {
+                        return RedirectToAction("Index", "Dashboard");
+                    }
                 }
             }
             return View(changePasswordViewModel);

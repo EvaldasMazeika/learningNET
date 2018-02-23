@@ -26,7 +26,9 @@ namespace KompleksinisV2.Models
         [Display(Name = "Skyrius")]
         public int DepartmentID { get; set; }
 
-        public Employee Employee { get; set; }
+        public Guid EmployeeID { get; set; }
+
+        public AppIdentityUser Employee { get; set; }
         public ICollection<Comments> Comments { get; set; }
         public Department Department { get; set; }
     }

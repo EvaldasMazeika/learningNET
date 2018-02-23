@@ -26,11 +26,11 @@ namespace KompleksinisV2.ViewComponents
         }
         private void PopulateEmployeeDropDown(object selected = null)
         {
-            var query = (from d in _context.Employees
-                        orderby d.Name
-                        select d).Where(x => x.DepartmentID == _context.Departments.Single(c=>c.Name == "Pardavimai").ID);
+            //var query = (from d in _context.Employees
+            //            orderby d.Name
+            //            select d).Where(x => x.DepartmentID == _context.Departments.Single(c=>c.Name == "Pardavimai").ID);
 
-            ViewBag.EmployeeID = new SelectList(query.AsNoTracking(), "ID", "FullName", selected);
+            //ViewBag.EmployeeID = new SelectList(query.AsNoTracking(), "ID", "FullName", selected);
         }
     }
 }

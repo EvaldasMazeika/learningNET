@@ -93,17 +93,18 @@ namespace KompleksinisV2.Controllers
         [HttpPost]
         public async Task<IActionResult> NewOrder([Bind("ClientID", "Notes")]Order order)
         {
-            if (ModelState.IsValid)
-            {
-                order.CreateDate = DateTime.Now;
-                order.EmployeeID = Int32.Parse(User.Identities.First(u => u.IsAuthenticated && u.HasClaim(c => c.Type == "UserID")).FindFirst("UserID").Value);
-                order.StateID = _context.States.Single(i => i.Name == "Sukurta").ID;
-                _context.Add(order);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Orders));
-            }
+            //if (ModelState.IsValid)
+            //{
+            //    order.CreateDate = DateTime.Now;
+            //    order.EmployeeID = Int32.Parse(User.Identities.First(u => u.IsAuthenticated && u.HasClaim(c => c.Type == "UserID")).FindFirst("UserID").Value);
+            //    order.StateID = _context.States.Single(i => i.Name == "Sukurta").ID;
+            //    _context.Add(order);
+            //    await _context.SaveChangesAsync();
+            //    return RedirectToAction(nameof(Orders));
+            //}
 
-            return View(order);
+            //return View(order);
+            return View();
         }
 
         private void PopulateClientsDropDown(object selected = null)
@@ -386,20 +387,20 @@ namespace KompleksinisV2.Controllers
         [HttpPost]
         public async Task<IActionResult> Comments([Bind("MessageID", "Comment")] Comments comments)
         {
-            if (ModelState.IsValid)
-            {
-                int _id = Int32.Parse(User.Identities.First(u => u.IsAuthenticated && u.HasClaim(c => c.Type == "UserID")).FindFirst("UserID").Value);
+            //if (ModelState.IsValid)
+            //{
+            //    int _id = Int32.Parse(User.Identities.First(u => u.IsAuthenticated && u.HasClaim(c => c.Type == "UserID")).FindFirst("UserID").Value);
 
-                string firsName = _context.Employees.SingleOrDefault(x => x.ID == _id).Name;
-                string secondName = _context.Employees.SingleOrDefault(x => x.ID == _id).Surname;
+            //    string firsName = _context.Employees.SingleOrDefault(x => x.ID == _id).Name;
+            //    string secondName = _context.Employees.SingleOrDefault(x => x.ID == _id).Surname;
 
-                comments.ComDate = DateTime.Now;
-                comments.Fullname = firsName + " " + secondName;
+            //    comments.ComDate = DateTime.Now;
+            //    comments.Fullname = firsName + " " + secondName;
 
-                _context.Add(comments);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Comments));
-            }
+            //    _context.Add(comments);
+            //    await _context.SaveChangesAsync();
+            //    return RedirectToAction(nameof(Comments));
+            //}
             return View();
         }
 
@@ -413,46 +414,46 @@ namespace KompleksinisV2.Controllers
         [HttpPost]
         public IActionResult TotalOrdersReport([Bind("EmployeeID", "BeginDate", "EndDate")] TotalOrdersViewModel totalOrdersViewModal)
         {
-            if(ModelState.IsValid)
-            {
-                ViewData["employee"] = _context.Employees.Single(x => x.ID == totalOrdersViewModal.EmployeeID).FullName;
-                ViewData["BeginDate"] = totalOrdersViewModal.BeginDate;
-                ViewData["EndDate"] = totalOrdersViewModal.EndDate;
-                var query = _context.Orders.Where(x => x.EmployeeID == totalOrdersViewModal.EmployeeID && (x.StateID == _context.States.Single(c => c.Name == "Uždaryta").ID) && (x.CreateDate >= totalOrdersViewModal.BeginDate && x.CreateDate <= totalOrdersViewModal.EndDate));
-                return View(query.ToList());
-            }
+            //if(ModelState.IsValid)
+            //{
+            //    ViewData["employee"] = _context.Employees.Single(x => x.ID == totalOrdersViewModal.EmployeeID).FullName;
+            //    ViewData["BeginDate"] = totalOrdersViewModal.BeginDate;
+            //    ViewData["EndDate"] = totalOrdersViewModal.EndDate;
+            //    var query = _context.Orders.Where(x => x.EmployeeID == totalOrdersViewModal.EmployeeID && (x.StateID == _context.States.Single(c => c.Name == "Uždaryta").ID) && (x.CreateDate >= totalOrdersViewModal.BeginDate && x.CreateDate <= totalOrdersViewModal.EndDate));
+            //    return View(query.ToList());
+            //}
             return RedirectToAction(nameof(Reports));
         }
 
         [HttpPost]
         public async Task<IActionResult> AllOrdersReport([Bind("BeginDate", "EndDate")] AllOrdersViewModel allOrdersViewModel)
         {
-            if(ModelState.IsValid)
-            {
-                ViewData["BeginDate"] = allOrdersViewModel.BeginDate;
-                ViewData["EndDate"] = allOrdersViewModel.EndDate;
+            //if(ModelState.IsValid)
+            //{
+            //    ViewData["BeginDate"] = allOrdersViewModel.BeginDate;
+            //    ViewData["EndDate"] = allOrdersViewModel.EndDate;
 
-                var items = await _context.Orders.Where(x => x.StateID == _context.States.Single(c => c.Name == "Uždaryta").ID && (x.Employee.DepartmentID == _context.Departments.Single(c => c.Name == "Pardavimai").ID) && (x.CreateDate >= allOrdersViewModel.BeginDate && x.CreateDate <= allOrdersViewModel.EndDate)).ToListAsync();
+            //    var items = await _context.Orders.Where(x => x.StateID == _context.States.Single(c => c.Name == "Uždaryta").ID && (x.Employee.DepartmentID == _context.Departments.Single(c => c.Name == "Pardavimai").ID) && (x.CreateDate >= allOrdersViewModel.BeginDate && x.CreateDate <= allOrdersViewModel.EndDate)).ToListAsync();
 
-                var emps = items.Select(z => z.EmployeeID).Distinct();
+            //    var emps = items.Select(z => z.EmployeeID).Distinct();
 
-                var query = new List<AllOrdersResultViewModel>();
+            //    var query = new List<AllOrdersResultViewModel>();
 
-                foreach (var item in emps)
-                {
-                    var temp = new AllOrdersResultViewModel
-                    {
-                        EmployeeID = item,
-                        FullName = _context.Employees.Single(x => x.ID == item).FullName,
-                        OrdersNumber = items.Where(x => x.EmployeeID == item).Count(),
-                        TotalPrice = items.Where(x => x.EmployeeID == item).Select(a => a.TotalPrice).Sum() ?? 0,
-                        TotalProfit = items.Where(x => x.EmployeeID == item).Select(a => a.TotalProfit).Sum() ?? 0
-                    };
-                    query.Add(temp);
-                }
+            //    foreach (var item in emps)
+            //    {
+            //        var temp = new AllOrdersResultViewModel
+            //        {
+            //            EmployeeID = item,
+            //            FullName = _context.Employees.Single(x => x.ID == item).FullName,
+            //            OrdersNumber = items.Where(x => x.EmployeeID == item).Count(),
+            //            TotalPrice = items.Where(x => x.EmployeeID == item).Select(a => a.TotalPrice).Sum() ?? 0,
+            //            TotalProfit = items.Where(x => x.EmployeeID == item).Select(a => a.TotalProfit).Sum() ?? 0
+            //        };
+            //        query.Add(temp);
+            //    }
 
-                return View(query);
-            }
+            //    return View(query);
+            //}
             return RedirectToAction(nameof(Reports));
 
         }

@@ -1,17 +1,20 @@
-﻿@model KompleksinisV2.Models.Employee
+﻿@model KompleksinisV2.Models.ViewModels.NewEmployeeViewModel
 
 <h1 class="display-4">Redaguokite darbuotojo duomenis</h1>
 <hr />
 
 <form asp-action="EditEmployee">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <input type="hidden" asp-for="ID" />
-    <input type="hidden" asp-for="Password" />
     <div class="form-row">
-        <div class="form-group col-md-12">
+        <div class="form-group col-md-6">
             <label asp-for="Email" class="control-label"></label>
             <input asp-for="Email" class="form-control" />
             <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+        <div class="form-group col-md-6">
+            <label asp-for="UserName" class="control-label"></label>
+            <input asp-for="UserName" class="form-control" />
+            <span asp-validation-for="UserName" class="text-danger"></span>
         </div>
     </div>
     <div class="form-row">
@@ -38,8 +41,8 @@
             <span asp-validation-for="MobileNumber" class="text-danger"></span>
         </div>
         <div class="form-group col-md-4">
-            <label asp-for="DepartmentID" class="control-label"></label>
-            <select asp-for="DepartmentID" class="form-control" asp-items="ViewBag.DepartmentID"></select>
+            <label asp-for="DepartmentId" class="control-label"></label>
+            <select asp-for="DepartmentId" class="form-control" asp-items="ViewBag.RoleId"></select>
         </div>
     </div>
     <input type="submit" value="Išsaugoti" class="btn btn-primary" />

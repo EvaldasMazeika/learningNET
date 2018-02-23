@@ -12,7 +12,7 @@ namespace KompleksinisV2.Data
         { // seeding local db
             context.Database.EnsureCreated();
 
-            if(context.Employees.Any()) // jeigu kazkas yra, nieko nedarom
+            if(context.Departments.Any()) // jeigu kazkas yra, nieko nedarom
             {
                 return;
             }
@@ -30,17 +30,17 @@ namespace KompleksinisV2.Data
             context.SaveChanges();
 
 
-            var employees = new Employee[]
-            {
-                new Employee{Name="Evaldas",Surname="Jonuos",Email="i@i.i",Password="evas",BirthDate=new DateTime(2017,01,01),MobileNumber="+37060000000",DepartmentID=sectors.Single( i => i.Name == "Administracija").ID},
-                new Employee{Name="Jonas",Surname="Enoas",Email="a@a.a",Password="evas",BirthDate=new DateTime(2010,11,11),MobileNumber="+37099900009",DepartmentID=sectors.Single( i => i.Name == "Pardavimai").ID},
-                new Employee{Name="Petras",Surname="Petraitis",Email="z@z.z",Password="evas",BirthDate=new DateTime(1995,11,11),MobileNumber="+37099900009",DepartmentID=sectors.Single( i => i.Name == "Sandėlis").ID}
-            };
-            foreach (Employee emp in employees)
-            {
-                context.Employees.Add(emp);
-            }
-            context.SaveChanges();
+            //var employees = new Employee[]
+            //{
+            //    new Employee{Name="Evaldas",Surname="Jonuos",Email="i@i.i",Password="evas",BirthDate=new DateTime(2017,01,01),MobileNumber="+37060000000",DepartmentID=sectors.Single( i => i.Name == "Administracija").ID},
+            //    new Employee{Name="Jonas",Surname="Enoas",Email="a@a.a",Password="evas",BirthDate=new DateTime(2010,11,11),MobileNumber="+37099900009",DepartmentID=sectors.Single( i => i.Name == "Pardavimai").ID},
+            //    new Employee{Name="Petras",Surname="Petraitis",Email="z@z.z",Password="evas",BirthDate=new DateTime(1995,11,11),MobileNumber="+37099900009",DepartmentID=sectors.Single( i => i.Name == "Sandėlis").ID}
+            //};
+            //foreach (Employee emp in employees)
+            //{
+            //    context.Employees.Add(emp);
+            //}
+            //context.SaveChanges();
 
             var clients = new Client[]
             {
@@ -89,27 +89,27 @@ namespace KompleksinisV2.Data
             }
             context.SaveChanges();
 
-            var order = new Order[]
-            {
-                new Order{ClientID=clients.Single( i => i.Name == "Petras").ID,CreateDate=new DateTime(2010,11,11),Notes="Nori greitai",StateID=states.Single( i => i.Name == "Sukurta").ID,EmployeeID=employees.Single( i => i.Name == "Evaldas").ID}
-            };
+            //var order = new Order[]
+            //{
+            //    new Order{ClientID=clients.Single( i => i.Name == "Petras").ID,CreateDate=new DateTime(2010,11,11),Notes="Nori greitai",StateID=states.Single( i => i.Name == "Sukurta").ID,EmployeeID=employees.Single( i => i.Name == "Evaldas").ID}
+            //};
 
-            foreach (var item in order)
-            {
-                context.Orders.Add(item);
-            }
-            context.SaveChanges();
+            //foreach (var item in order)
+            //{
+            //    context.Orders.Add(item);
+            //}
+            //context.SaveChanges();
 
-            var orderItems = new OrderItem[]
-            {
-                new OrderItem{OrderID=order.Single( i => i.Notes == "Nori greitai").ID,ProductID=prd.Single( i => i.Name == "Baravykai").ID,Quantity=10,Price=5.4M}
-            };
+            //var orderItems = new OrderItem[]
+            //{
+            //    new OrderItem{OrderID=order.Single( i => i.Notes == "Nori greitai").ID,ProductID=prd.Single( i => i.Name == "Baravykai").ID,Quantity=10,Price=5.4M}
+            //};
 
-            foreach (var item in orderItems)
-            {
-                context.OrderItems.Add(item);
-            }
-            context.SaveChanges();
+            //foreach (var item in orderItems)
+            //{
+            //    context.OrderItems.Add(item);
+            //}
+            //context.SaveChanges();
 
 
         }

@@ -15,7 +15,7 @@ namespace KompleksinisV2.Models
         [Display(Name = "Klientas")]
         public int ClientID { get; set; }
 
-        public int EmployeeID { get; set; }
+        public Guid EmployeeID { get; set; }
 
         [MinLength(5, ErrorMessage = "Ne mažiau kaip 5 ženklai")]
         [MaxLength(100, ErrorMessage = "Ne daugiau kaip 100 simbolių")]
@@ -29,7 +29,7 @@ namespace KompleksinisV2.Models
 
         public int StateID { get; set; }
 
-        public Employee Employee { get; set; }
+        public AppIdentityUser Employee { get; set; }
         public Client Client { get; set; }
         public State State { get; set; }
         public ICollection<OrderItem> OrderItems { get; set; }

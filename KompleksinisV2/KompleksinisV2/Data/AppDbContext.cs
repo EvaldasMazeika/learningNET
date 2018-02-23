@@ -12,9 +12,7 @@ namespace KompleksinisV2.Data
         public AppDbContext(DbContextOptions<AppDbContext> options) :base(options)
         {}
 
-
         public DbSet<Department> Departments { get; set; }
-        public DbSet<Employee> Employees { get; set; }
         public DbSet<Message> Messages { get; set; }
         public DbSet<Comments> Comments { get; set; }
         public DbSet<Client> Clients { get; set; }
@@ -23,21 +21,6 @@ namespace KompleksinisV2.Data
         public DbSet<State> States { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
-
-
-       /* protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<Department>().ToTable("Department");
-            modelBuilder.Entity<Employee>().ToTable("Employee");
-            modelBuilder.Entity<Message>().ToTable("Message");
-            modelBuilder.Entity<Comments>().ToTable("Comments");
-            modelBuilder.Entity<Client>().ToTable("Clients");
-            modelBuilder.Entity<ProductGroup>().ToTable("ProductGroup");
-            modelBuilder.Entity<Product>().ToTable("Product");
-            modelBuilder.Entity<State>().ToTable("State");
-            modelBuilder.Entity<Order>().ToTable("Order");
-            modelBuilder.Entity<OrderItem>().ToTable("OrderItem");
-        }*/
 
     }
 }
