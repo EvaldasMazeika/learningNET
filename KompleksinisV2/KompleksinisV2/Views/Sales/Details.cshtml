@@ -88,7 +88,7 @@ else
                 <td>
                     @if (Model.State.Name == "Sukurta")
                     {
-                        <button type="button" class="btn btn-danger btn-xs" onclick="ajaxDelete(@item.ID)"><i class="glyphicon glyphicon-trash"></i></button>
+                        <button type="button" class="btn btn-danger btn-xs" onclick="ajaxDelete(@item.ID)"><i class="fas fa-ban"></i></button>
                     }
                     else if (Model.State.Name == "Laukiama")
                     {

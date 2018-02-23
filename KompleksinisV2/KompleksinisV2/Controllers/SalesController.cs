@@ -6,20 +6,23 @@ using KompleksinisV2.Data;
 using KompleksinisV2.Models;
 using KompleksinisV2.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace KompleksinisV2.Controllers
 {
-    [Authorize(Roles ="Sales")]
+    [Authorize(Roles ="Sales,Administrator")]
     public class SalesController : Controller
     {
         private AppDbContext _context;
+        private readonly UserManager<AppIdentityUser> _userManager;
 
-        public SalesController(AppDbContext context)
+        public SalesController(AppDbContext context, UserManager<AppIdentityUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         public async Task<IActionResult> Index()
@@ -93,18 +96,21 @@ namespace KompleksinisV2.Controllers
         [HttpPost]
         public async Task<IActionResult> NewOrder([Bind("ClientID", "Notes")]Order order)
         {
-            //if (ModelState.IsValid)
-            //{
-            //    order.CreateDate = DateTime.Now;
-            //    order.EmployeeID = Int32.Parse(User.Identities.First(u => u.IsAuthenticated && u.HasClaim(c => c.Type == "UserID")).FindFirst("UserID").Value);
-            //    order.StateID = _context.States.Single(i => i.Name == "Sukurta").ID;
-            //    _context.Add(order);
-            //    await _context.SaveChangesAsync();
-            //    return RedirectToAction(nameof(Orders));
-            //}
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.GetUserAsync(HttpContext.User);
+                Guid id = user.Id;
 
-            //return View(order);
-            return View();
+                order.CreateDate = DateTime.Now;
+                order.EmployeeID = id;
+                order.StateID = _context.States.Single(i => i.Name == "Sukurta").ID;
+                _context.Add(order);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Orders));
+            }
+
+            return View(order);
+
         }
 
         private void PopulateClientsDropDown(object selected = null)
@@ -387,20 +393,18 @@ namespace KompleksinisV2.Controllers
         [HttpPost]
         public async Task<IActionResult> Comments([Bind("MessageID", "Comment")] Comments comments)
         {
-            //if (ModelState.IsValid)
-            //{
-            //    int _id = Int32.Parse(User.Identities.First(u => u.IsAuthenticated && u.HasClaim(c => c.Type == "UserID")).FindFirst("UserID").Value);
+            if (ModelState.IsValid)
+            {
+                AppIdentityUser user = await _userManager.GetUserAsync(HttpContext.User);
+                var _id = user.Id;
 
-            //    string firsName = _context.Employees.SingleOrDefault(x => x.ID == _id).Name;
-            //    string secondName = _context.Employees.SingleOrDefault(x => x.ID == _id).Surname;
+                comments.ComDate = DateTime.Now;
+                comments.Fullname = user.FullName;
 
-            //    comments.ComDate = DateTime.Now;
-            //    comments.Fullname = firsName + " " + secondName;
-
-            //    _context.Add(comments);
-            //    await _context.SaveChangesAsync();
-            //    return RedirectToAction(nameof(Comments));
-            //}
+                _context.Add(comments);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Comments));
+            }
             return View();
         }
 
@@ -412,48 +416,52 @@ namespace KompleksinisV2.Controllers
         }
 
         [HttpPost]
-        public IActionResult TotalOrdersReport([Bind("EmployeeID", "BeginDate", "EndDate")] TotalOrdersViewModel totalOrdersViewModal)
+        public async Task <IActionResult> TotalOrdersReport([Bind("EmployeeID", "BeginDate", "EndDate")] TotalOrdersViewModel totalOrdersViewModal)
         {
-            //if(ModelState.IsValid)
-            //{
-            //    ViewData["employee"] = _context.Employees.Single(x => x.ID == totalOrdersViewModal.EmployeeID).FullName;
-            //    ViewData["BeginDate"] = totalOrdersViewModal.BeginDate;
-            //    ViewData["EndDate"] = totalOrdersViewModal.EndDate;
-            //    var query = _context.Orders.Where(x => x.EmployeeID == totalOrdersViewModal.EmployeeID && (x.StateID == _context.States.Single(c => c.Name == "Uždaryta").ID) && (x.CreateDate >= totalOrdersViewModal.BeginDate && x.CreateDate <= totalOrdersViewModal.EndDate));
-            //    return View(query.ToList());
-            //}
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.FindByIdAsync(totalOrdersViewModal.EmployeeID.ToString());
+
+
+                ViewData["employee"] = user.FullName;
+                ViewData["BeginDate"] = totalOrdersViewModal.BeginDate;
+                ViewData["EndDate"] = totalOrdersViewModal.EndDate;
+                var query = _context.Orders.Where(x => x.EmployeeID == totalOrdersViewModal.EmployeeID && (x.StateID == _context.States.Single(c => c.Name == "Uždaryta").ID) && (x.CreateDate >= totalOrdersViewModal.BeginDate && x.CreateDate <= totalOrdersViewModal.EndDate));
+                return View(query.ToList());
+            }
             return RedirectToAction(nameof(Reports));
         }
 
         [HttpPost]
         public async Task<IActionResult> AllOrdersReport([Bind("BeginDate", "EndDate")] AllOrdersViewModel allOrdersViewModel)
         {
-            //if(ModelState.IsValid)
-            //{
-            //    ViewData["BeginDate"] = allOrdersViewModel.BeginDate;
-            //    ViewData["EndDate"] = allOrdersViewModel.EndDate;
+            if (ModelState.IsValid)
+            {
+                ViewData["BeginDate"] = allOrdersViewModel.BeginDate;
+                ViewData["EndDate"] = allOrdersViewModel.EndDate;
 
-            //    var items = await _context.Orders.Where(x => x.StateID == _context.States.Single(c => c.Name == "Uždaryta").ID && (x.Employee.DepartmentID == _context.Departments.Single(c => c.Name == "Pardavimai").ID) && (x.CreateDate >= allOrdersViewModel.BeginDate && x.CreateDate <= allOrdersViewModel.EndDate)).ToListAsync();
+                var items = await _context.Orders.Where(x => x.StateID == _context.States.Single(c => c.Name == "Uždaryta").ID && (x.CreateDate >= allOrdersViewModel.BeginDate && x.CreateDate <= allOrdersViewModel.EndDate)).ToListAsync();
 
-            //    var emps = items.Select(z => z.EmployeeID).Distinct();
+                var emps = items.Select(z => z.EmployeeID).Distinct();
 
-            //    var query = new List<AllOrdersResultViewModel>();
+                var query = new List<AllOrdersResultViewModel>();
 
-            //    foreach (var item in emps)
-            //    {
-            //        var temp = new AllOrdersResultViewModel
-            //        {
-            //            EmployeeID = item,
-            //            FullName = _context.Employees.Single(x => x.ID == item).FullName,
-            //            OrdersNumber = items.Where(x => x.EmployeeID == item).Count(),
-            //            TotalPrice = items.Where(x => x.EmployeeID == item).Select(a => a.TotalPrice).Sum() ?? 0,
-            //            TotalProfit = items.Where(x => x.EmployeeID == item).Select(a => a.TotalProfit).Sum() ?? 0
-            //        };
-            //        query.Add(temp);
-            //    }
+                foreach (var item in emps)
+                {
+                    var user = await _userManager.FindByIdAsync(item.ToString());
+                    var temp = new AllOrdersResultViewModel
+                    {
+                        EmployeeID = item,
+                        FullName = user.FullName,
+                        OrdersNumber = items.Where(x => x.EmployeeID == item).Count(),
+                        TotalPrice = items.Where(x => x.EmployeeID == item).Select(a => a.TotalPrice).Sum() ?? 0,
+                        TotalProfit = items.Where(x => x.EmployeeID == item).Select(a => a.TotalProfit).Sum() ?? 0
+                    };
+                    query.Add(temp);
+                }
 
-            //    return View(query);
-            //}
+                return View(query);
+            }
             return RedirectToAction(nameof(Reports));
 
         }

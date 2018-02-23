@@ -10,7 +10,7 @@ namespace KompleksinisV2.Models.ViewModels
     {
         [Required]
         [Display(Name ="Darbuotojas")]
-        public int EmployeeID { get; set; }
+        public Guid EmployeeID { get; set; }
 
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]

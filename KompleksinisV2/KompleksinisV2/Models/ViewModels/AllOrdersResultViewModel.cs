@@ -7,7 +7,7 @@ namespace KompleksinisV2.Models.ViewModels
 {
     public class AllOrdersResultViewModel
     {
-        public int EmployeeID { get; set; }
+        public Guid EmployeeID { get; set; }
         public string FullName { get; set; }
         public int OrdersNumber { get; set; }
         public Decimal TotalPrice { get; set; }
